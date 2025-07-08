@@ -22,12 +22,12 @@ workouts = [
 def seed():
     with app.app_context():  # Ensures Flask app context
         db.drop_all()        # Clears existing tables before creating the sample data
-        db.create_all()
-
+        db.create_all()      # Creates tables from sample data declared above
+        # Adds all sample seed data to the tables accordingly
         db.session.add_all(users)
         db.session.add_all(workout_types)
         db.session.add_all(workouts)
-
+        # Save all changes made to the database with a commit command
         db.session.commit()
         print("✅ Database seeded successfully!")
 
