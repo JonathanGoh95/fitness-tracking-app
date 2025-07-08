@@ -11,6 +11,7 @@ pyjwt = "*"
 bcrypt = "*"
 python-dotenv = "*"
 psycopg = {extras = ["binary"], version = "*"}
+flask-cors = "*"
 
 [dev-packages]
 
