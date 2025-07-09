@@ -1,5 +1,5 @@
 from server import app, db  # Import your Flask app and db instance
-from models import User, Workout, WorkoutType  # Models
+from app.models import User, Workout, WorkoutType  # Models
 
 # Sample Seed Data
 users = [
