@@ -1,10 +1,11 @@
-import { useQuery } from '@tanstack/react-query'
-import * as workoutService from '../../services/workoutService'
+import { useQuery } from "@tanstack/react-query";
+import * as workoutService from "../services/workoutService";
+import type { Workout } from "../types/workout";
 
 // Fetch all workouts
 export const useWorkouts = () => {
-  return useQuery({
-    queryKey: ['workouts'],
+  return useQuery<Workout[]>({
+    queryKey: ["workouts"],
     queryFn: workoutService.getWorkouts,
-  })
-}
+  });
+};
