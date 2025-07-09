@@ -6,7 +6,7 @@ def create_app():
     app = Flask(__name__)
     
     # Configuration
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://user:password@hostname/dbname'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg://neondb_owner:npg_FCdSrvGW6K0c@ep-calm-dream-a1dagoq9-pooler.ap-southeast-1.aws.neon.tech/fitness_db?sslmode=require'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     # Initialize extensions
@@ -15,6 +15,6 @@ def create_app():
 
     # Import and register blueprints
     from app.routes import api_blueprint   # Import Blueprint from Flask in Routes
-    app.register_blueprint(api_blueprint)  # No /api prefix if you don't want
+    app.register_blueprint(api_blueprint)
 
     return app

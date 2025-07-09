@@ -1,14 +1,14 @@
 from flask import Blueprint, jsonify, request
 from models import db, Workout
 
-api = Blueprint('api', __name__)
+api_blueprint = Blueprint('api', __name__)
 
-@api.route('/workouts', methods=['GET'])
+@api_blueprint.route('/workouts', methods=['GET'])
 def get_workouts():
     workouts = Workout.query.all()
     return jsonify([{"id": w.id, "name": w.name, "duration": w.duration} for w in workouts])
 
-@api.route('/workouts', methods=['POST'])
+@api_blueprint.route('/workouts', methods=['POST'])
 def add_workout():
     data = request.get_json()
     new_workout = Workout(name=data['name'], duration=data['duration'])
