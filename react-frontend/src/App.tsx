@@ -15,13 +15,14 @@ export const App = () => {
     <>
       <NavBar />
       <Routes>
+        <Route path='/' element={<Dashboard />}/>
         <Route path='/sign-up' element={<SignUpPage />}/>
         <Route path='/sign-in' element={<SignInPage />}/>
-        <Route path='/' element={<Dashboard />}/>
-        <Route path='/workouts' element={<WorkoutListPage />}/>
-        <Route path='/workouts/:id' element={<WorkoutItem />}/>
-        <Route path='/workouts/new' element={<AddWorkoutPage />}/>
-        <Route path='/workouts/:id/edit' element={<EditWorkoutPage />}/>
+        <Route path='/workouts' element={<WorkoutListPage />}>
+          <Route path='/:id' element={<WorkoutItem />}/>
+          <Route path='/new' element={<AddWorkoutPage />}/>
+          <Route path='/:id/edit' element={<EditWorkoutPage />}/>
+        </Route>
       </Routes>
     </>
   )
