@@ -1,4 +1,4 @@
-# Middleware for decoding token and will be included in each necesary route
+# Middleware for decoding token and will be included in each route that checks for a signed-in user
 from functools import wraps
 from flask import request, jsonify, g
 import jwt
