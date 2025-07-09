@@ -46,7 +46,7 @@ def sign_up():
         # Returns a message with the token
         return jsonify({'message': 'User Created Successfully!', 'token': token}), 201
     except Exception as err:
-        # Rollback if potential errors are encountered
+        # Rollback(Undo) changes if potential errors are encountered
         db.session.rollback()
         return jsonify({"err": str(err)}), 500
     
@@ -63,15 +63,13 @@ def sign_in():
     
     user = User.query.filter_by(username=username).first()
 
-    if not user:
-        return jsonify({"err": "Invalid credentials."}), 401
     password_is_valid = bcrypt.checkpw(
         bytes(password, 'utf-8'),
         bytes(user.password_hash, 'utf-8')
     )
-    if not password_is_valid:
+    if not user or not password_is_valid:
         return jsonify({"err": "Invalid credentials."}), 401
-    
+
     try:
         # Fetch user info to create token payload
         user_info = {
@@ -82,8 +80,6 @@ def sign_in():
         token = jwt.encode(user_info, os.getenv('JWT_SECRET'), algorithm="HS256")
         return jsonify({'message': 'Sign In Successful', 'token': token}), 200
     except Exception as err:
-        # Rollback on potential errors
-        db.session.rollback()
         return jsonify({"err": str(err)}), 500
 
 @api_blueprint.route('/workouts', methods=['GET'])
