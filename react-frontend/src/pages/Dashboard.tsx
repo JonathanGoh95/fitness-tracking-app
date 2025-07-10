@@ -11,7 +11,7 @@ export const Dashboard: FC = () => {
 
   return (<>
     <div>
-      <img src={coverImage}/>
+      <img className="rounded w-5/6 h-1/3" src={coverImage}/>
     </div>
     {user ? (
       <div className="flex-col content-center">

@@ -1,5 +1,5 @@
 import { Routes, Route } from "react-router-dom";
-import { SignUpPage } from "./pages/SignUpPage";
+import { signUpAction, SignUpPage } from "./pages/SignUpPage";
 import { SignInPage } from "./pages/SignInPage";
 import { Dashboard } from "./pages/Dashboard";
 import { WorkoutListPage } from "./pages/WorkoutLIstPage";
@@ -15,7 +15,7 @@ export const App = () => {
       <NavBar />
       <Routes>
         <Route path="/" element={<Dashboard />} />
-        <Route path="/sign-up" element={<SignUpPage />} />
+        <Route path="/sign-up" element={<SignUpPage />} action={signUpAction}/>
         <Route path="/sign-in" element={<SignInPage />} />
         <Route path="/workouts" element={<WorkoutListPage />}>
           <Route path="/:id" element={<WorkoutItem />} />
