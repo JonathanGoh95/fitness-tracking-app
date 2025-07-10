@@ -2,7 +2,7 @@ import axios from "axios";
 import type { UserSignUp,User } from "../types/user";
 import { jwtDecode } from "jwt-decode"
 
-const BASE_URL = "http://localhost:5000";
+const BASE_URL = `${import.meta.env.VITE_BACK_END_SERVER_URL}`;
 
 const signUp = async (data: UserSignUp) => {
   try {
