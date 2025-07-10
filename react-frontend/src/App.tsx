@@ -5,9 +5,9 @@ import { Dashboard } from "./pages/Dashboard";
 import { WorkoutListPage } from "./pages/WorkoutLIstPage";
 import { WorkoutItem } from "./components/WorkoutItem";
 import { NavBar } from "./components/NavBar";
-import "./App.css";
 import { AddWorkoutPage } from "./pages/AddWorkoutPage";
 import { EditWorkoutPage } from "./pages/EditWorkoutPage";
+import "./App.css";
 
 export const App = () => {
   return (
