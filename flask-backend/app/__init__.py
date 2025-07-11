@@ -2,12 +2,15 @@
 from flask import Flask
 from app.db import close_db
 from flask_cors import CORS # Import CORS module for CORS functionality
+from dotenv import load_dotenv
+load_dotenv()
+import os
 
 def create_app():
     app = Flask(__name__)
     
     # Configuration
-    app.config['DATABASE_URI'] = 'postgresql://neondb_owner:npg_FCdSrvGW6K0c@ep-calm-dream-a1dagoq9-pooler.ap-southeast-1.aws.neon.tech/fitness_db?sslmode=require'
+    app.config['DATABASE_URI'] = os.getenv('POSTGRES_URL')
     CORS(app)
 
     # Import and register blueprints for routes

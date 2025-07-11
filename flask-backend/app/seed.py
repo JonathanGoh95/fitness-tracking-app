@@ -1,8 +1,11 @@
 import psycopg
 import bcrypt
 from datetime import date
+from dotenv import load_dotenv
+load_dotenv()
+import os
 
-DATABASE_URI = 'postgresql://neondb_owner:npg_FCdSrvGW6K0c@ep-calm-dream-a1dagoq9-pooler.ap-southeast-1.aws.neon.tech/fitness_db?sslmode=require'
+DATABASE_URI = os.getenv('POSTGRES_URL')
 
 # Seeding function
 def seed():
