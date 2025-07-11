@@ -6,15 +6,15 @@ CREATE TABLE users (
     user_role VARCHAR(10) NOT NULL DEFAULT 'user'
 );
 
-CREATE TABLE workout_types (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(120) NOT NULL,
-    category_id INTEGER NOT NULL REFERENCES category_types(id)
-);
-
 CREATE TABLE category_types (
     id SERIAL PRIMARY KEY,
     name VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE workout_types (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    category_id INTEGER NOT NULL REFERENCES category_types(id)
 );
 
 CREATE TABLE workouts (
