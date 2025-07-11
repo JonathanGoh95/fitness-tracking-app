@@ -1,11 +1,19 @@
 import { useQuery } from "@tanstack/react-query";
-import * as workoutService from "../services/workoutService";
+import { getWorkouts } from "../services/workoutService";
+import { userAtom } from "../atoms/userAtom";
+import { useAtomValue } from "jotai";
 import type { Workout } from "../types/workout";
 
 // Fetch all workouts
 export const useWorkouts = () => {
+  const user = useAtomValue(userAtom)
+
   return useQuery<Workout[]>({
     queryKey: ["workouts"],
-    queryFn: workoutService.getWorkouts,
+    queryFn: () => {
+      if (!user?.token) throw new Error("User not authenticated");
+      return getWorkouts(user.token, user.id)
+    },
+    enabled: !!user?.token,
   });
 };

@@ -7,7 +7,7 @@ export const NavBar: FC = () => {
   const user = useAtomValue(userAtom)
 
   return (
-  <div className="flex justify-between bg-black text-white">
+  <div className="navbar bg-base-100 shadow-sm flex justify-between bg-black text-white">
     <div>
       <Link to={'/'}>🏋🏽🔥FitTrack💪🏼🎧</Link>
     </div>
@@ -17,9 +17,11 @@ export const NavBar: FC = () => {
       {user ? (
       <p>Welcome, {user.username}</p>
       ):(
-      <div>
-        <Link to="/sign-up">Sign Up</Link>
-        <Link to="/sign-in">Sign In</Link>
+      <div className="flex-none">
+        <ul className="menu menu-horizontal px-1">
+          <li><Link to="/sign-up">Sign Up</Link></li>
+          <li><Link to="/sign-in">Sign In</Link></li>
+        </ul>
       </div>
     )}
     </div>
