@@ -45,16 +45,19 @@ export const SignUpPage: FC = () => {
         <legend className="fieldset-legend">Sign Up</legend>
         {error && <div className="text-red-500">{error}</div>}
           <label className="text-sm/6 font-medium text-white">Username</label>
-          <input type='text' name='username' required className="input" placeholder="Username"/>
-
+          <input type='text' name='username' className="input validator" required placeholder="Username" pattern="[A-Za-z][A-Za-z0-9\-]*" minLength={3} maxLength={30} title="Only letters, numbers or dash"/>
+          <p className="validator-hint">Must be 3 to 30 characters<br/>containing only letters, numbers or dash</p>
+          
           <label className="text-sm/6 font-medium text-white">Email</label>
-          <input type='email' name='email' required className="input" placeholder="Email"/>
+          <input type='email' name='email' className="input validator" required placeholder="Email"/>
+          <p className="validator-hint">Enter valid email address</p>
 
           <label className="text-sm/6 font-medium text-white">Password</label>
-          <input type='password' name='password' required className="Password"/>
+          <input type='password' name='password' className="input validator" required placeholder="Password" title="Must be more than 8 characters" pattern="[A-Za-z0-9]{8,}" minLength={8}/>
+          <p className="validator-hint">Must be more than 8 characters</p>
 
           <label className="text-sm/6 font-medium text-white">Confirm Password</label>
-          <input type='password' name='passwordConfirm' required className="Confirm Password"/>
+          <input type='password' name='passwordConfirm' className="input" required placeholder="Confirm Password"/>
 
           <button className="btn btn-neutral mt-4">Submit</button>
       </fieldset>

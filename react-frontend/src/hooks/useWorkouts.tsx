@@ -15,5 +15,6 @@ export const useWorkouts = () => {
       return getWorkouts(user.token, user.id)
     },
     enabled: !!user?.token,
+    staleTime: 10000
   });
 };

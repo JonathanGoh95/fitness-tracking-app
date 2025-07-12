@@ -1,5 +1,5 @@
 import type { FC } from "react";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { useAtomValue } from "jotai";
 import { userAtom } from "../atoms/userAtom";
 
