@@ -21,9 +21,9 @@ const getWorkouts = async (token: string, id: number): Promise<Workout[]> => {
   }
 };
 
-const deleteWorkout = async (token: string, id: number): Promise<Workout[]> => {
+const deleteWorkout = async (token: string, workoutId: number): Promise<Workout[]> => {
   try {
-    const response = await axios.delete(`${BASE_URL}/workouts/${id}`, {
+    const response = await axios.delete(`${BASE_URL}/workouts/${workoutId}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },});

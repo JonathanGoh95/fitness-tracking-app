@@ -51,7 +51,7 @@ export const WorkoutListPage: FC = () => {
   {user ? (
     <>
     <h1>Welcome, {user.username}</h1>
-    <div className="overflow-x-auto">
+    {data?.length !== 0 ? (<div className="overflow-x-auto">
     <table className="table">
     {/* head */}
     <thead>
@@ -71,6 +71,7 @@ export const WorkoutListPage: FC = () => {
         <th>{idx+1}</th>
         <td>{w.duration_mins}</td>
         <td>{w.calories_burned}</td>
+        {/* Date Formatting for Frontend */}
         <td>{new Date(w.workout_date).toLocaleDateString()}</td>
         <td>{w.workout_type}</td>
         <td>{w.category}</td>
@@ -81,6 +82,10 @@ export const WorkoutListPage: FC = () => {
       </tr>
     ))}
     </tbody>
+    </table>
+    <div className="flex justify-center">
+      <button className="btn btn-neutral" type="button" onClick={()=>navigate("")}>Create New Workout</button>
+    </div>
     <dialog id="my_modal" className="modal" open={deleteId !== null}>
       <div className="modal-box">
         <h3 className="font-bold text-lg">Confirm Workout Deletion</h3>
@@ -91,8 +96,11 @@ export const WorkoutListPage: FC = () => {
         <button className="btn btn-neutral" type="button" onClick={closeDeleteModal}>Close</button>
       </form>
     </dialog>
-    </table>
-  </div>
+  </div>) : 
+  (
+    <h2>No Workout Data Found for {user.username}.</h2>
+  )
+  }
   </>
   ) : (
     <h1>Sign Up/Sign In to create/view your workouts!</h1>

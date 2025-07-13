@@ -17,10 +17,12 @@ def validate_fields(data, required_fields):
     missing = [field for field in required_fields if field not in data or not data[field]]
     return missing
 
+# Sign Up Route
 @api_blueprint.route('/sign-up', methods=['POST'])
 def sign_up():
     new_user_data = request.get_json()
     missing = validate_fields(new_user_data, ['username', 'email', 'password'])
+    # Concatenate all missing fields into a single string message
     if missing:
         return jsonify({'error': f"Missing fields: {', '.join(missing)}"}), 400
     # Extract username, email and password from request JSON
@@ -28,7 +30,7 @@ def sign_up():
     email = new_user_data.get('email')
     password = new_user_data.get('password')
     user_role = new_user_data.get('user_role', 'user')
-
+    # Create hashed password using bcrypt
     hashed_password = bcrypt.hashpw(bytes(password, 'utf-8'), bcrypt.gensalt())
     db = get_db()
     try:
@@ -56,7 +58,8 @@ def sign_up():
         # Rollback(Undo) changes if potential errors are encountered
         db.rollback()
         return jsonify({"err": str(err)}), 500
-    
+
+# Sign In Route
 @api_blueprint.route('/sign-in', methods=['POST'])
 def sign_in():
     sign_in_form_data = request.get_json()
@@ -97,6 +100,7 @@ def sign_in():
     except Exception as err:
         return jsonify({"err": str(err)}), 500
 
+# Fetch User Workouts
 @workout_blueprint.route('/<int:user_id>', methods=['GET'])
 @token_required
 def get_user_workouts(user_id):
@@ -128,6 +132,20 @@ def get_user_workouts(user_id):
         for w in workouts
     ]
         return jsonify(workout_data)
+    except Exception as err:
+        return jsonify({"err": str(err)}), 500
+    
+@workout_blueprint.route('/<int:workoutId>', methods=['DELETE'])
+@token_required
+def delete_user_workout(workoutId):
+    db = get_db()
+    try:
+        with db.cursor() as cur:
+            cur.execute(
+            "DELETE FROM workouts WHERE id = %s",(workoutId,)
+        )
+        db.commit()
+        return jsonify({"message": "Workout deleted successfully."}), 200
     except Exception as err:
         return jsonify({"err": str(err)}), 500
 
