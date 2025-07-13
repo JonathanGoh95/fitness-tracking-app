@@ -1,18 +1,18 @@
 import { useQuery } from "@tanstack/react-query";
-import { getWorkouts } from "../services/workoutService";
+import { getWorkoutMetadata } from "../services/metadataService";
 import { userAtom } from "../atoms/userAtom";
 import { useAtomValue } from "jotai";
-import type { Workout } from "../types/workout";
+import type { WorkoutMetadata } from "../types/metadata";
 
 // Fetch all workouts
-export const useWorkouts = () => {
+export const useWorkoutMetadata = () => {
   const user = useAtomValue(userAtom)
 
-  return useQuery<Workout[]>({
-    queryKey: ["workouts"],
+  return useQuery<WorkoutMetadata>({
+    queryKey: ["metadata"],
     queryFn: () => {
       if (!user?.token) throw new Error("User not authenticated");
-      return getWorkouts(user.token, user.id)
+      return getWorkoutMetadata(user.token)
     },
     enabled: !!user?.token,
     staleTime: 5000

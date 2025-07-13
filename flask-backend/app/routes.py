@@ -21,7 +21,7 @@ def validate_fields(data, required_fields):
 @api_blueprint.route('/sign-up', methods=['POST'])
 def sign_up():
     new_user_data = request.get_json()
-    missing = validate_fields(new_user_data, ['username', 'email', 'password'])
+    missing = validate_fields(new_user_data, ['username', 'email', 'password', 'passwordConfirm', 'user_weight'])
     # Concatenate all missing fields into a single string message
     if missing:
         return jsonify({'error': f"Missing fields: {', '.join(missing)}"}), 400
@@ -30,6 +30,7 @@ def sign_up():
     email = new_user_data.get('email')
     password = new_user_data.get('password')
     user_role = new_user_data.get('user_role', 'user')
+    user_weight = new_user_data.get('user_weight')
     # Create hashed password using bcrypt
     hashed_password = bcrypt.hashpw(bytes(password, 'utf-8'), bcrypt.gensalt())
     db = get_db()
@@ -40,8 +41,8 @@ def sign_up():
                 return jsonify({'error': 'Username or Email Address already exists'}), 409
             
             cur.execute(
-                "INSERT INTO users (username, email, password_hash, user_role) VALUES (%s, %s, %s, %s) RETURNING id, username, user_role",
-                (username, email, hashed_password, user_role)
+                "INSERT INTO users (username, email, password_hash, user_weight, user_role) VALUES (%s, %s, %s, %s, %s) RETURNING id, username, user_weight, user_role",
+                (username, email, hashed_password, user_weight, user_role)
             )
             user = cur.fetchone()
         db.commit()
@@ -49,7 +50,8 @@ def sign_up():
         user_info = {
             "id": user[0],
             "username": user[1],
-            "user_role": user[2]
+            "user_weight": user[2],
+            "user_role": user[3]
         }
         token = jwt.encode(user_info, os.getenv('JWT_SECRET'), algorithm="HS256")
         # Returns a message with the token
@@ -75,7 +77,7 @@ def sign_in():
     db = get_db()
     try:
         with db.cursor() as cur:
-            cur.execute("SELECT id, username, password_hash, user_role FROM users WHERE username = %s", (username,))
+            cur.execute("SELECT id, username, password_hash, user_weight, user_role FROM users WHERE username = %s", (username,))
             user = cur.fetchone()
             
             if not user:
@@ -93,7 +95,8 @@ def sign_in():
         user_info = {
             "id": user[0],
             "username": user[1],
-            "user_role": user[3]
+            "user_weight": user[3],
+            "user_role": user[4]
         }
         token = jwt.encode(user_info, os.getenv('JWT_SECRET'), algorithm="HS256")
         return jsonify({'message': 'Sign In Successful', 'token': token}), 200
@@ -110,7 +113,7 @@ def get_user_workouts(user_id):
             cur.execute(
             """
             SELECT w.id, w.duration_mins, w.calories_burned, w.workout_date,
-            wt.name AS workout_type, ct.name AS category
+            wt.workout_name AS workout_type, ct.category_name AS category
             FROM workouts w
             JOIN workout_types wt ON w.workout_type_id = wt.id
             JOIN category_types ct ON wt.category_id = ct.id
@@ -134,7 +137,8 @@ def get_user_workouts(user_id):
         return jsonify(workout_data)
     except Exception as err:
         return jsonify({"err": str(err)}), 500
-    
+
+# Delete User Workout
 @workout_blueprint.route('/<int:workoutId>', methods=['DELETE'])
 @token_required
 def delete_user_workout(workoutId):
@@ -146,6 +150,48 @@ def delete_user_workout(workoutId):
         )
         db.commit()
         return jsonify({"message": "Workout deleted successfully."}), 200
+    except Exception as err:
+        return jsonify({"err": str(err)}), 500
+
+# Fetch Category Types and Workout Types Metadata
+@workout_blueprint.route('/metadata', methods=['GET'])
+@token_required
+def get_workout_metadata():
+    db = get_db()
+    try:
+        with db.cursor() as cur:
+            cur.execute("SELECT id, category_name FROM category_types ORDER BY category_name")
+            categories = [{"id": c[0], "category_name": c[1]} for c in cur.fetchall()]
+            cur.execute("SELECT id, workout_name, met_value, category_id FROM workout_types ORDER BY workout_name")
+            workout_types = [
+                {"id": w[0], "workout_name": w[1], "met_value": w[2],"category_id": w[3]} for w in cur.fetchall()
+            ]
+        return jsonify({
+            "categories": categories,
+            "workout_types": workout_types
+        }), 200
+    except Exception as err:
+        return jsonify({"err": str(err)}), 500
+    
+# Add a New Workout
+@workout_blueprint.route('/new', methods=['POST'])
+@token_required
+def add_workout():
+    workout_data = request.get_json()
+    user_id = workout_data.get('user_id')
+    workout_type_id = workout_data.get('workout_type_id')
+    duration_mins = workout_data.get('duration_mins')
+    calories_burned = workout_data.get('calories_burned')
+    workout_date = workout_data.get('workout_date')
+    db = get_db()
+    try:
+        with db.cursor() as cur:
+            cur.execute(
+                "INSERT INTO workouts (user_id, workout_type_id, duration_mins, calories_burned, workout_date) VALUES (%s, %s, %s, %s, %s) RETURNING id, user_id, duration_mins, calories_burned, workout_date",
+                (user_id, workout_type_id, duration_mins, calories_burned, workout_date)
+            )
+        db.commit()
+        return jsonify({'message': 'Workout Created Successfully!'}), 201
     except Exception as err:
         return jsonify({"err": str(err)}), 500
 

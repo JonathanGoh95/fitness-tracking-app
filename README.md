@@ -57,3 +57,4 @@
 - Daisy UI: https://daisyui.com/components/
 - Tailwind CSS: https://tailwindcss.com
 - Axios: https://axios-http.com/docs/intro
+- MET Values: https://en.wikipedia.org/wiki/Metabolic_equivalent_of_task

@@ -1,17 +1,18 @@
 import { userAtom } from "../atoms/userAtom";
-import { useAtomValue } from "jotai";
+import { useAtomValue, useAtom } from "jotai";
 import { useWorkouts } from "../hooks/useWorkouts";
 import { useNavigate } from "react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteWorkout } from "../services/workoutService";
-import { useState } from "react";
+import { deleteIdAtom } from "../atoms/deleteIdAtom";
+// import { useState } from "react";
 import type { FC } from "react";
 
 export const WorkoutListPage: FC = () => {
   const user = useAtomValue(userAtom)
   const navigate = useNavigate()
   const queryClient = useQueryClient();
-  const [deleteId, setDeleteId] = useState<number | null>(null);
+  const [deleteId, setDeleteId] = useAtom(deleteIdAtom);
 
   const deleteMutation = useMutation({
     mutationFn: (workoutId: number) => {
@@ -73,7 +74,7 @@ export const WorkoutListPage: FC = () => {
         <td>{w.calories_burned}</td>
         {/* Date Formatting for Frontend */}
         <td>{new Date(w.workout_date).toLocaleDateString()}</td>
-        <td>{w.workout_type}</td>
+        <td>{w.workout_type_id}</td>
         <td>{w.category}</td>
         <td>
           <button className="btn btn-neutral mt-4" onClick={() => handleEdit(w.id)}>Edit</button>
@@ -103,7 +104,7 @@ export const WorkoutListPage: FC = () => {
   }
   </>
   ) : (
-    <h1>Sign Up/Sign In to create/view your workouts!</h1>
+    <h1>Sign Up/Sign In to view your workouts!</h1>
   )}
   </>);
 };

@@ -22,39 +22,50 @@ def seed():
             
             # Seed Sample Users
             users = [
-                    {"username": "alice", "email": "alice@example.com", "password": "password123", "user_role": "user"},
-                    {"username": "bob", "email": "bob@example.com", "password": "securepass", "user_role": "admin"},
+                    {"username": "alice", "email": "alice@example.com", "password": "password123", "user_weight": 55.0, "user_role": "user"},
+                    {"username": "bob", "email": "bob@example.com", "password": "securepass", "user_weight": 70.5, "user_role": "admin"},
                 ]
             for user in users:
                 hashed_pw = bcrypt.hashpw(bytes(user["password"], 'utf-8'), bcrypt.gensalt())
                 cur.execute(
-                    "INSERT INTO users (username, email, password_hash, user_role) VALUES (%s, %s, %s, %s) RETURNING id",
-                    (user["username"], user["email"], hashed_pw, user["user_role"])
+                    "INSERT INTO users (username, email, password_hash, user_weight, user_role) VALUES (%s, %s, %s, %s, %s) RETURNING id",
+                    (user["username"], user["email"], hashed_pw, user["user_weight"], user["user_role"])
                 )
                 user["id"] = cur.fetchone()[0]
             
             # Seed Category Types
             categories = ["Cardio", "Strength", "Flexibility", "Balance"]
             category_ids = {}
-            for name in categories:
+            for category_name in categories:
                 cur.execute(
-                    "INSERT INTO category_types (name) VALUES (%s) RETURNING id",
-                    (name,)
+                    "INSERT INTO category_types (category_name) VALUES (%s) RETURNING id",
+                    (category_name,)
                 )
-                category_ids[name] = cur.fetchone()[0]
+                category_ids[category_name] = cur.fetchone()[0]
             
             # Seed Workout Types (linked to category_types)
             workout_types = [
-                {"name": "Running", "category": "Cardio"},
-                {"name": "Cycling", "category": "Cardio"},
-                {"name": "Weight Lifting", "category": "Strength"},
-                {"name": "Yoga", "category": "Flexibility"},
+                {"name": "Running", "category": "Cardio", "met_value": 8.0},
+                {"name": "Cycling", "category": "Cardio", "met_value": 6.0},
+                {"name": "Weight Lifting", "category": "Strength", "met_value": 5.0},
+                {"name": "Yoga", "category": "Flexibility", "met_value": 3.0},
+                {"name": "Swimming", "category": "Cardio", "met_value": 7.0},
+                {"name": "Rowing Machine", "category": "Cardio", "met_value": 7.0},
+                {"name": "HIIT", "category": "Cardio", "met_value": 9.0},
+                {"name": "Pilates", "category": "Flexibility", "met_value": 3.0},
+                {"name": "Push-Ups", "category": "Strength", "met_value": 8.0},
+                {"name": "Squats", "category": "Strength", "met_value": 5.0},
+                {"name": "Tai Chi", "category": "Balance", "met_value": 3.0},
+                {"name": "Jump Rope", "category": "Cardio", "met_value": 12.3},
+                {"name": "Elliptical Trainer", "category": "Cardio", "met_value": 5.0},
+                {"name": "Stair Climbing", "category": "Cardio", "met_value": 8.8},
+                {"name": "Stretching", "category": "Flexibility", "met_value": 2.3},
             ]
             for wt in workout_types:
                 category_id = category_ids[wt["category"]]
                 cur.execute(
-                    "INSERT INTO workout_types (name, category_id) VALUES (%s, %s) RETURNING id",
-                    (wt["name"], category_id)
+                    "INSERT INTO workout_types (workout_name, met_value, category_id) VALUES (%s, %s, %s) RETURNING id",
+                    (wt["name"], wt["met_value"], category_id)
                 )
                 wt["id"] = cur.fetchone()[0]
             
