@@ -32,7 +32,20 @@ def seed():
                     (user["username"], user["email"], hashed_pw, user["user_weight"], user["user_role"])
                 )
                 user["id"] = cur.fetchone()[0]
-            
+                
+            # Add Admin Users (Comment out other code transactions/queries before proceeding)
+            admins = [
+                    {"username": "John", "email": "adminjohn@adminexample.com", "password": "securepass123", "user_weight": 72.0, "user_role": "admin"},
+                    {"username": "Jane", "email": "adminjane@adminexample.com", "password": "securepass456", "user_weight": 48.0, "user_role": "admin"},
+                ]
+            for admin in admins:
+                hashed_pw = bcrypt.hashpw(bytes(admin["password"], 'utf-8'), bcrypt.gensalt())
+                cur.execute(
+                    "INSERT INTO users (username, email, password_hash, user_weight, user_role) VALUES (%s, %s, %s, %s, %s) RETURNING id",
+                    (admin["username"], admin["email"], hashed_pw, admin["user_weight"], admin["user_role"])
+                )
+                admin["id"] = cur.fetchone()[0]
+                
             # Seed Category Types
             categories = ["Cardio", "Strength", "Flexibility", "Balance"]
             category_ids = {}
@@ -105,7 +118,6 @@ def seed():
                 )
             conn.commit()
             print("✅ Database seeded successfully!")
-            
     except Exception as err:
         conn.rollback()
         print("❌ Error during seeding:", err)

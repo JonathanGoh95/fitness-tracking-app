@@ -14,7 +14,15 @@ export const NavBar: FC = () => {
     <div className="flex gap-4">
       <Link to='/workouts'>View Workouts</Link>
       <Link to='/workouts/new'>Add Workout</Link>
-      {user ? (
+      {user && user.role === 'admin' && (
+        <div className="flex-none">
+        <ul className="menu menu-horizontal px-1">
+          <li><p>Welcome, Admin {user.username}</p></li>
+          <li><Link to="/sign-up">Add Admin Account</Link></li>
+        </ul>
+      </div>
+      )}
+      {user && user.role === 'user' ? (
       <p>Welcome, {user.username}</p>
       ):(
       <div className="flex-none">

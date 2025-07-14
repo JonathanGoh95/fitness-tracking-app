@@ -1,6 +1,6 @@
 import type { FC } from "react";
 import { signUp } from '../services/authService';
-import { useAtom, useSetAtom } from 'jotai';
+import { useAtom } from 'jotai';
 import { userAtom } from '../atoms/userAtom';
 import { errorAtom } from '../atoms/errorAtom';
 import { useNavigate } from 'react-router';
@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 
 export const SignUpPage: FC = () => {
   const navigate = useNavigate()
-  const setUser = useSetAtom(userAtom);
+  const [user,setUser] = useAtom(userAtom);
   const [error,setError] = useAtom(errorAtom)
   
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -44,6 +44,11 @@ export const SignUpPage: FC = () => {
   }
 
   return (
+  <>
+  {user && user.role === 'admin' && (
+    <></>
+  )}
+  {!user &&
   <div className="w-full max-w-lg px-4">
     <form onSubmit={handleSubmit}>
       <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4">
@@ -68,6 +73,7 @@ export const SignUpPage: FC = () => {
           <button className="btn btn-neutral mt-4">Submit</button>
       </fieldset>
     </form>
-  </div>
+  </div>}
+  </>
   );
 };
