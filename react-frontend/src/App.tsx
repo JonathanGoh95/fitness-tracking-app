@@ -18,11 +18,10 @@ export const App = () => {
         <Route path="/" element={<Dashboard />} />
         <Route path="/sign-up" element={<SignUpPage />}/>
         <Route path="/sign-in" element={<SignInPage />} />
-        <Route path="/workouts" element={<WorkoutListPage />}>
-          <Route path="/:workoutId" element={<WorkoutItem />} />
-          <Route path="/new" element={<WorkoutFormPage />} />
-          <Route path="/:workoutId/edit" element={<EditWorkoutPage />} />
-        </Route>
+        <Route path="/workouts" element={<WorkoutListPage />} />
+        <Route path="/workouts/:workoutId" element={<WorkoutItem />} />
+        <Route path="/workouts/new" element={<WorkoutFormPage />} />
+        <Route path="/workouts/:workoutId/edit" element={<EditWorkoutPage />} />
       </Routes>
       {/* Toastify Container for Visual Customization and Appearance in Browser */}
       <ToastContainer

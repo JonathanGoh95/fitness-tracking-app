@@ -1,4 +1,5 @@
 import { userAtom } from "../atoms/userAtom";
+import { Link } from "react-router";
 import { useAtomValue, useAtom } from "jotai";
 import { useWorkouts } from "../hooks/useWorkouts";
 import { useNavigate } from "react-router";
@@ -52,7 +53,8 @@ export const WorkoutListPage: FC = () => {
   {user ? (
     <>
     <h1>Welcome, {user.username}</h1>
-    {data?.length !== 0 ? (<div className="overflow-x-auto">
+    {data?.length !== 0 ? (
+    <div className="overflow-x-auto">
     <table className="table">
     {/* head */}
     <thead>
@@ -69,42 +71,44 @@ export const WorkoutListPage: FC = () => {
     <tbody>
     {data?.map((w,idx)=>(
       <tr key={idx}>
-        <th>{idx+1}</th>
-        <td>{w.duration_mins}</td>
-        <td>{w.calories_burned}</td>
-        {/* Date Formatting for Frontend */}
-        <td>{new Date(w.workout_date).toLocaleDateString()}</td>
-        <td>{w.workout_type_id}</td>
-        <td>{w.category}</td>
-        <td>
-          <button className="btn btn-neutral mt-4" onClick={() => handleEdit(w.id)}>Edit</button>
-          <button className="btn btn-neutral mt-4" onClick={() => openDeleteModal(w.id)}>Delete</button>
-        </td>
+          <th><Link to={`/workouts/${w.id}`}>{idx+1}</Link></th>
+          <td>{w.duration_mins}</td>
+          <td>{w.calories_burned}</td>
+          {/* Date Formatting for Frontend */}
+          <td>{new Date(w.workout_date).toLocaleDateString()}</td>
+          <td>{w.workout_type_id}</td>
+          <td>{w.category}</td>
+          <td>
+            <div className="flex gap-4">
+              <button className="btn btn-warning mt-4" onClick={() => handleEdit(w.id)}>Edit</button>
+              <button className="btn btn-error mt-4" onClick={() => openDeleteModal(w.id)}>Delete</button>
+            </div>
+          </td>
       </tr>
     ))}
     </tbody>
     </table>
     <div className="flex justify-center">
-      <button className="btn btn-neutral" type="button" onClick={()=>navigate("")}>Create New Workout</button>
+      <button className="btn btn-neutral" type="button" onClick={() => navigate("/workouts/new")}>Create New Workout</button>
     </div>
-    <dialog id="my_modal" className="modal" open={deleteId !== null}>
-      <div className="modal-box">
-        <h3 className="font-bold text-lg">Confirm Workout Deletion</h3>
-        <p className="py-4">This action cannot be undone. Are you sure you want to continue?</p>
-      </div>
-      <form method="dialog" className="modal-action flex justify-center gap-2">
-        <button className="btn btn-error" type="button" onClick={handleDelete}>Delete Workout</button>
-        <button className="btn btn-neutral" type="button" onClick={closeDeleteModal}>Close</button>
-      </form>
-    </dialog>
   </div>) : 
   (
     <h2>No Workout Data Found for {user.username}.</h2>
-  )
-  }
+  )}
+  <dialog className="modal" open={deleteId !== null}>
+    <div className="modal-box">
+      <h3 className="font-bold text-lg">Confirm Workout Deletion</h3>
+      <p className="py-4">This action cannot be undone. Are you sure you want to continue?</p>
+    </div>
+    <form method="dialog" className="modal-action flex justify-center gap-2">
+      <button className="btn btn-error" type="button" onClick={handleDelete}>Delete Workout</button>
+      <button className="btn btn-neutral" type="button" onClick={closeDeleteModal}>Close</button>
+    </form>
+  </dialog>
   </>
   ) : (
     <h1>Sign Up/Sign In to view your workouts!</h1>
   )}
-  </>);
+  </>
+  );
 };
