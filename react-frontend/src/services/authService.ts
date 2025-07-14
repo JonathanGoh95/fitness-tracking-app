@@ -23,6 +23,22 @@ const signUp = async (data: UserSignUp) => {
   }
 };
 
+const adminSignUp = async (token: string, data: UserSignUp) => {
+  try {
+    const response = await axios.post(`${BASE_URL}/admin/sign-up`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    }, data});
+    if (response.statusText !== "OK") {
+      throw new Error(`Response status: ${response.status}`);
+    }
+    return response.data
+  } catch (error) {
+    console.error("Error creating admin: ", error);
+    throw error;
+  }
+};
+
 const signIn = async (data: UserSignIn) => {
   try {
     const response = await axios.post(`${BASE_URL}/sign-in`, data);
@@ -40,4 +56,4 @@ const signIn = async (data: UserSignIn) => {
   }
 };
 
-export { signUp, signIn };
+export { signUp, adminSignUp, signIn };

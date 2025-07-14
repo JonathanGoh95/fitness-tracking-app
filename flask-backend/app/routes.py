@@ -59,7 +59,46 @@ def sign_up():
     except Exception as err:
         # Rollback(Undo) changes if potential errors are encountered
         db.rollback()
-        return jsonify({"err": str(err)}), 500
+        return jsonify({"error": str(err)}), 500
+
+# Admin Sign Up Route
+@api_blueprint.route('/admin/sign-up', methods=['POST'])
+@token_required
+def admin_sign_up(current_user):
+    if current_user.get('user_role') != 'admin':
+        return jsonify({"error": "Not authorized to create admin accounts"}), 403
+    new_admin_data = request.get_json()
+    missing = validate_fields(new_admin_data, ['username', 'email', 'password', 'passwordConfirm', 'user_weight'])
+    # Concatenate all missing fields into a single string message
+    if missing:
+        return jsonify({'error': f"Missing fields: {', '.join(missing)}"}), 400
+    # Extract username, email and password from request JSON
+    username = new_admin_data.get('username')
+    email = new_admin_data.get('email')
+    password = new_admin_data.get('password')
+    user_role = 'admin'
+    user_weight = new_admin_data.get('user_weight')
+    # Create hashed password using bcrypt
+    hashed_password = bcrypt.hashpw(bytes(password, 'utf-8'), bcrypt.gensalt())
+    
+    db = get_db()
+    try:
+        with db.cursor() as cur:
+            cur.execute("SELECT id FROM users WHERE username = %s OR email = %s", (username, email))
+            if cur.fetchone():
+                return jsonify({'error': 'Username or Email Address already exists'}), 409
+            
+            cur.execute(
+                "INSERT INTO users (username, email, password_hash, user_weight, user_role) VALUES (%s, %s, %s, %s, %s)",
+                (username, email, hashed_password, user_weight, user_role)
+            )
+        db.commit()
+        # Returns a message
+        return jsonify({'message': 'Admin Created Successfully!'}), 201
+    except Exception as err:
+        # Rollback(Undo) changes if potential errors are encountered
+        db.rollback()
+        return jsonify({"error": str(err)}), 500
 
 # Sign In Route
 @api_blueprint.route('/sign-in', methods=['POST'])
@@ -81,7 +120,7 @@ def sign_in():
             user = cur.fetchone()
             
             if not user:
-                return jsonify({"err": "Invalid credentials."}), 401
+                return jsonify({"error": "Invalid credentials."}), 401
             
             password_is_valid = bcrypt.checkpw(
                 bytes(password, 'utf-8'),
@@ -89,7 +128,7 @@ def sign_in():
             )
             
             if not password_is_valid:
-                return jsonify({"err": "Invalid credentials."}), 401
+                return jsonify({"error": "Invalid credentials."}), 401
             
         # Fetch user info to create token payload
         user_info = {
@@ -101,7 +140,7 @@ def sign_in():
         token = jwt.encode(user_info, os.getenv('JWT_SECRET'), algorithm="HS256")
         return jsonify({'message': 'Sign In Successful', 'token': token}), 200
     except Exception as err:
-        return jsonify({"err": str(err)}), 500
+        return jsonify({"error": str(err)}), 500
 
 # Fetch User Workouts
 @workout_blueprint.route('/<int:user_id>', methods=['GET'])
@@ -136,7 +175,7 @@ def get_user_workouts(user_id):
     ]
         return jsonify(workout_data)
     except Exception as err:
-        return jsonify({"err": str(err)}), 500
+        return jsonify({"error": str(err)}), 500
 
 # Delete User Workout
 @workout_blueprint.route('/<int:workoutId>', methods=['DELETE'])
@@ -151,7 +190,7 @@ def delete_user_workout(workoutId):
         db.commit()
         return jsonify({"message": "Workout deleted successfully."}), 200
     except Exception as err:
-        return jsonify({"err": str(err)}), 500
+        return jsonify({"error": str(err)}), 500
 
 # Fetch Category Types and Workout Types Metadata
 @workout_blueprint.route('/metadata', methods=['GET'])
@@ -171,7 +210,7 @@ def get_workout_metadata():
             "workout_types": workout_types
         }), 200
     except Exception as err:
-        return jsonify({"err": str(err)}), 500
+        return jsonify({"error": str(err)}), 500
     
 # Add a New Workout
 @workout_blueprint.route('/new', methods=['POST'])
@@ -193,7 +232,7 @@ def add_workout():
         db.commit()
         return jsonify({'message': 'Workout Created Successfully!'}), 201
     except Exception as err:
-        return jsonify({"err": str(err)}), 500
+        return jsonify({"error": str(err)}), 500
 
 # @workout_blueprint.route('/', methods=['POST'])
 # @token_required

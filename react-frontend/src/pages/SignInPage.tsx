@@ -22,7 +22,7 @@ export const SignInPage: FC = () => {
     const result = await signIn(data);
     if (result && result.payload) {
       setUser(result.payload);
-      toast.success("Sign In Successful. Redirecting to Landing Page...")
+      toast.success("Sign In Successful. Redirecting to Dashboard...")
       setError(null);
       setTimeout(() => {
         navigate(`/`);
