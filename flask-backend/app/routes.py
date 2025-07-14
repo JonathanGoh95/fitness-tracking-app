@@ -143,9 +143,9 @@ def sign_in():
         return jsonify({"error": str(err)}), 500
 
 # Fetch User Workouts
-@workout_blueprint.route('/<int:user_id>', methods=['GET'])
+@workout_blueprint.route('/', methods=['GET'])
 @token_required
-def get_user_workouts(user_id):
+def get_user_workouts(current_user):
     db = get_db()
     try:
         with db.cursor() as cur:
@@ -159,7 +159,7 @@ def get_user_workouts(user_id):
             WHERE w.user_id = %s
             ORDER BY w.workout_date DESC
             """,
-            (user_id,)
+            (current_user['id'],)
         )
             workouts = cur.fetchall()
         workout_data = [
@@ -180,19 +180,22 @@ def get_user_workouts(user_id):
 # Delete User Workout
 @workout_blueprint.route('/<int:workoutId>', methods=['DELETE'])
 @token_required
-def delete_user_workout(workoutId):
+def delete_user_workout(current_user, workoutId):
     db = get_db()
     try:
         with db.cursor() as cur:
             cur.execute(
-            "DELETE FROM workouts WHERE id = %s",(workoutId,)
+            "DELETE FROM workouts WHERE id = %s AND user_id = %s",(workoutId, current_user['id'])
         )
+        deleted = cur.fetchone()
+        if not deleted:
+            return jsonify({"error": "Workout not found/authorized."}), 404
         db.commit()
         return jsonify({"message": "Workout deleted successfully."}), 200
     except Exception as err:
         return jsonify({"error": str(err)}), 500
 
-# Fetch Category Types and Workout Types Metadata
+# Fetch Category Types and Workout Types Metadata for populating Workout Form fields
 @workout_blueprint.route('/metadata', methods=['GET'])
 @token_required
 def get_workout_metadata():
@@ -215,9 +218,12 @@ def get_workout_metadata():
 # Add a New Workout
 @workout_blueprint.route('/new', methods=['POST'])
 @token_required
-def add_workout():
+def add_workout(current_user):
     workout_data = request.get_json()
-    user_id = workout_data.get('user_id')
+    # Validation for required fields
+    missing = validate_fields(workout_data, ['workout_type_id', 'duration_mins', 'calories_burned', 'workout_date'])
+    if missing:
+        return jsonify({'error': f"Missing fields: {', '.join(missing)}"}), 400
     workout_type_id = workout_data.get('workout_type_id')
     duration_mins = workout_data.get('duration_mins')
     calories_burned = workout_data.get('calories_burned')
@@ -226,23 +232,69 @@ def add_workout():
     try:
         with db.cursor() as cur:
             cur.execute(
-                "INSERT INTO workouts (user_id, workout_type_id, duration_mins, calories_burned, workout_date) VALUES (%s, %s, %s, %s, %s) RETURNING id, user_id, duration_mins, calories_burned, workout_date",
-                (user_id, workout_type_id, duration_mins, calories_burned, workout_date)
+                "INSERT INTO workouts (user_id, workout_type_id, duration_mins, calories_burned, workout_date) VALUES (%s, %s, %s, %s, %s)",
+                (current_user['id'], workout_type_id, duration_mins, calories_burned, workout_date)
             )
         db.commit()
         return jsonify({'message': 'Workout Created Successfully!'}), 201
     except Exception as err:
         return jsonify({"error": str(err)}), 500
-
-# @workout_blueprint.route('/', methods=['POST'])
-# @token_required
-# def add_workout():
-#     db = get_db()
-#     with db.cursor() as cur:
-#         cur.execute("SELECT id, name, duration, user_id FROM workouts")
-#         workouts = cur.fetchall()
-#     data = request.get_json()
-#     new_workout = Workout(name=data['name'], duration=data['duration'])
-#     db.session.add(new_workout)
-#     db.session.commit()
-#     return jsonify({"message": "Workout added!"}), 201
+    
+# Fetch One Workout
+@workout_blueprint.route('/<int:workoutId>/edit', methods=['GET'])
+@token_required
+def get_workout(current_user, workoutId):
+    db = get_db()
+    try:
+        with db.cursor() as cur:
+            cur.execute(
+                """
+                SELECT w.id, w.duration_mins, w.calories_burned, w.workout_date,
+                w.workout_type_id, wt.workout_name, wt.category_id, ct.category_name
+                FROM workouts w
+                JOIN workout_types wt ON w.workout_type_id = wt.id
+                JOIN category_types ct ON wt.category_id = ct.id
+                WHERE w.id = %s AND w.user_id = %s
+                """,
+                (workoutId, current_user['id'])
+            )
+            row = cur.fetchone()
+            if not row:
+                return jsonify({"error": "Workout not found"}), 404
+            workout = {
+                "id": row[0],
+                "duration_mins": row[1],
+                "calories_burned": row[2],
+                "workout_date": row[3].isoformat(),
+                "workout_type_id": row[4],
+                "workout_type": row[5],
+                "category_id": row[6],
+                "category": row[7]
+            }
+        return jsonify(workout), 200
+    except Exception as err:
+        return jsonify({"error": str(err)}), 500
+    
+# Update Workout
+@workout_blueprint.route('/<int:workoutId>/edit', methods=['PUT'])
+@token_required
+def update_workout(current_user, workoutId):
+    update_workout_data = request.get_json()
+    workout_type_id = update_workout_data.get('workout_type_id')
+    duration_mins = update_workout_data.get('duration_mins')
+    calories_burned = update_workout_data.get('calories_burned')
+    workout_date = update_workout_data.get('workout_date')
+    db = get_db()
+    try:
+        with db.cursor() as cur:
+            cur.execute(
+                "UPDATE workouts SET workout_type_id = %s, duration_mins = %s, calories_burned = %s, workout_date = %s WHERE id = %s AND user_id = %s",
+                (workout_type_id, duration_mins, calories_burned, workout_date, workoutId, current_user['id'])
+            )
+            updated = cur.fetchone()
+            if not updated:
+                return jsonify({'error': 'Workout not updated/authorized.'}), 404
+            db.commit()
+        return jsonify({'message': 'Workout Updated Successfully!'}), 200
+    except Exception as err:
+        return jsonify({"error": str(err)}), 500

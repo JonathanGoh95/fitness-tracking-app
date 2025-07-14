@@ -5,7 +5,7 @@ import { Dashboard } from "./pages/Dashboard";
 import { WorkoutListPage } from "./pages/WorkoutLIstPage";
 import { WorkoutItem } from "./components/WorkoutItem";
 import { NavBar } from "./components/NavBar";
-import { AddWorkoutPage } from "./pages/AddWorkoutPage";
+import { WorkoutFormPage } from "./pages/WorkoutFormPage";
 import { EditWorkoutPage } from "./pages/EditWorkoutPage";
 import { ToastContainer } from "react-toastify";
 import "./App.css";
@@ -20,7 +20,7 @@ export const App = () => {
         <Route path="/sign-in" element={<SignInPage />} />
         <Route path="/workouts" element={<WorkoutListPage />}>
           <Route path="/:workoutId" element={<WorkoutItem />} />
-          <Route path="/new" element={<AddWorkoutPage />} />
+          <Route path="/new" element={<WorkoutFormPage />} />
           <Route path="/:workoutId/edit" element={<EditWorkoutPage />} />
         </Route>
       </Routes>

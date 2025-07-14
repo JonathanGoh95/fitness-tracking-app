@@ -12,7 +12,7 @@ export const useWorkouts = () => {
     queryKey: ["workouts"],
     queryFn: () => {
       if (!user?.token) throw new Error("User not authenticated");
-      return getWorkouts(user.token, user.id)
+      return getWorkouts(user.token)
     },
     enabled: !!user?.token,
     staleTime: 5000

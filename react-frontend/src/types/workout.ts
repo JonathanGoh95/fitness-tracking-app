@@ -7,7 +7,18 @@ export interface Workout {
   category: string;
 }
 
-export interface AddWorkout {
+export interface FetchWorkout {
+  id: number;
+  duration_mins: number;
+  calories_burned: number;
+  workout_date: Date;
+  workout_type_id: number;
+  workout_type: string;
+  category_id: number;
+  category: string;
+}
+
+export interface AddEditWorkout {
   user_id: number;
   workout_type_id: number;
   duration_mins: number;

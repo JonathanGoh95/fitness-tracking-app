@@ -6,17 +6,19 @@ import { workoutTypeIdAtom } from "../atoms/workoutTypeIdAtom";
 import { durationAtom } from "../atoms/durationAtom";
 import { caloriesBurnedAtom } from "../atoms/caloriesBurnedAtom";
 import { useEffect, type FC } from "react";
-import { addWorkout } from "../services/workoutService";
+import { addWorkout, fetchOneWorkout, updateWorkout } from "../services/workoutService";
 import { useNavigate } from "react-router";
-import type { AddWorkout } from "../types/workout";
+import type { AddEditWorkout } from "../types/workout";
+import type { WorkoutFormPageProps } from "../types/workoutformprops";
 import { toast } from "react-toastify";
 
-export const AddWorkoutPage: FC = () => {
+export const WorkoutFormPage: FC<WorkoutFormPageProps> = ({workoutId}) => {
   const user = useAtomValue(userAtom)
   const [selectedWorkoutTypeId, setSelectedWorkoutTypeId] = useAtom(workoutTypeIdAtom);
   const [duration, setDuration] = useAtom(durationAtom);
   const [caloriesBurned, setCaloriesBurned] = useAtom(caloriesBurnedAtom); 
   const navigate = useNavigate()
+  const isEditing= Boolean(workoutId)
 
   // Get user's weight (from user object) and fallback to a default value if not found
   const userWeight = user?.user_weight ?? 70;
@@ -25,9 +27,22 @@ export const AddWorkoutPage: FC = () => {
 
   const [selectedCategoryId, setSelectedCategoryId] = useAtom(categoryIdAtom)
 
+  // If editing workout, fetch the workout and prefill/set atoms
+  useEffect(() => {
+    if (isEditing && workoutId) {
+      const fetchWorkout = async () => {
+        const workout = await fetchOneWorkout(user?.token ?? "", workoutId)
+        setSelectedCategoryId(workout.category_id);
+        setSelectedWorkoutTypeId(workout.workout_type_id);
+        setDuration(workout.duration_mins);
+      }
+      fetchWorkout()
+    }
+    }, [isEditing, workoutId, setSelectedCategoryId, setSelectedWorkoutTypeId, setDuration, user?.token]);
+
   // Calculate calories burned when workout type or duration changes using useEffect
   useEffect(() => {
-    if (selectedWorkoutTypeId && duration > 0) {
+    if (selectedWorkoutTypeId && duration > 0 && data) {
       const workoutType = data?.workout_types.find(wt => wt.id === selectedWorkoutTypeId);
       if (workoutType) {
         // MET formula: MET * weight (kg) * duration (hours)
@@ -48,7 +63,7 @@ export const AddWorkoutPage: FC = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    const data:AddWorkout = {
+    const workoutData:AddEditWorkout = {
       user_id: user?.id ?? 0,
       workout_type_id: Number(formData.get("workout_type")),
       duration_mins: Number(formData.get("duration")),
@@ -56,14 +71,17 @@ export const AddWorkoutPage: FC = () => {
       workout_date: new Date(formData.get("workout_date") as string),
     };
     try {
-      await addWorkout(user?.token ?? "", data);
-      toast.success("Workout Successfully Added. Redirecting to Workout List...")
-      setTimeout(() => {
-          navigate(`/workouts`);
-        }, 1500);
+      if (isEditing && workoutId) {
+        await updateWorkout(user?.token ?? "", workoutId, workoutData);
+        toast.success("Workout Updated! Redirecting to Workouts...");
+      } else {
+        await addWorkout(user?.token ?? "", workoutData);
+        toast.success("Workout Added! Redirecting to Workouts...");
+      }
+      setTimeout(() => navigate("/workouts"), 1500);
     } catch (err) {
-      console.error("Failed to add workout:", err);
-      toast.error("Failed to add workout: " + (err instanceof Error ? err.message : String(err)));
+      console.error("Failed to add/edit workout:", err);
+      toast.error("Failed to add/edit workout: " + (err instanceof Error ? err.message : String(err)));
     }
   };
 
@@ -73,11 +91,11 @@ export const AddWorkoutPage: FC = () => {
 
   return (
   <>
-  {user ? (
+  {user && !isEditing ? (
     <div className="w-full max-w-lg px-4">
     <form onSubmit={handleSubmit}>
       <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4">
-        <legend className="fieldset-legend">Add a New Workout</legend>
+        <legend className="fieldset-legend">{isEditing ? "Edit Workout" : "Add a New Workout"}</legend>
           <label className="text-sm/6 font-medium text-white">Category</label>
           <select
             name="category"
@@ -126,7 +144,7 @@ export const AddWorkoutPage: FC = () => {
             name="workout_date"
             className="input validator"
             required
-            // Optionally, set defaultValue to today:
+            // Set defaultValue to today:
             defaultValue={new Date().toISOString().split("T")[0]}
             // Unable to select 'future' dates
             max={new Date().toISOString().split("T")[0]}
@@ -138,13 +156,13 @@ export const AddWorkoutPage: FC = () => {
               name="calories_burned"
               className="input"
               value={caloriesBurned}
-              // No changes able to be made
+              // No changes to be made
               readOnly
               // Not selectable via keyboard
               tabIndex={-1}
           />
 
-          <button className="btn btn-neutral mt-4">Submit</button>
+          <button className="btn btn-neutral mt-4">{isEditing? "Edit" : "Add"} Workout</button>
       </fieldset>
     </form>
   </div>)

@@ -1,12 +1,11 @@
 import axios from "axios";
-import type { Workout } from "../types/workout";
-import type { AddWorkout } from "../types/workout";
+import type { Workout, AddEditWorkout, FetchWorkout } from "../types/workout";
 
 const BASE_URL = `${import.meta.env.VITE_BACK_END_SERVER_URL}`;
 
-const getWorkouts = async (token: string, id: number): Promise<Workout[]> => {
+const getWorkouts = async (token: string): Promise<Workout[]> => {
   try {
-    const response = await axios.get(`${BASE_URL}/workouts/${id}`, {
+    const response = await axios.get(`${BASE_URL}/workouts/`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },});
@@ -22,9 +21,45 @@ const getWorkouts = async (token: string, id: number): Promise<Workout[]> => {
   }
 };
 
-const addWorkout = async (token: string, data: AddWorkout): Promise<Workout[]> => {
+const addWorkout = async (token: string, data: AddEditWorkout) => {
   try {
     const response = await axios.post(`${BASE_URL}/workouts/new`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    }, data});
+
+    if (response.statusText !== "OK") {
+      throw new Error(`Response status: ${response.status}`);
+    }
+
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching workout data: ", error);
+    throw error;
+  }
+};
+
+const fetchOneWorkout = async (token: string, workoutId: number): Promise<FetchWorkout> => {
+  try {
+    const response = await axios.get(`${BASE_URL}/${workoutId}/edit`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    }});
+
+    if (response.statusText !== "OK") {
+      throw new Error(`Response status: ${response.status}`);
+    }
+
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching workout data: ", error);
+    throw error;
+  }
+};
+
+const updateWorkout = async (token: string, workoutId: number, data: AddEditWorkout)=> {
+  try {
+    const response = await axios.put(`${BASE_URL}/${workoutId}/edit`, {
     headers: {
       Authorization: `Bearer ${token}`,
     }, data});
@@ -58,4 +93,4 @@ const deleteWorkout = async (token: string, workoutId: number): Promise<Workout[
   }
 };
 
-export { getWorkouts, addWorkout, deleteWorkout };
+export { getWorkouts, addWorkout, fetchOneWorkout, updateWorkout, deleteWorkout };
