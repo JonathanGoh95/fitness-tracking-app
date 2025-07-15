@@ -95,6 +95,9 @@ export const SignUpPage: FC = () => {
           <input type='password' name='password' className="input validator" required placeholder="Password" title="Must be more than 8 characters" pattern="[A-Za-z0-9]{8,}" minLength={8}/>
           <p className="validator-hint text-red-500">Must be more than 8 characters</p>
 
+          <label className="text-sm/6 font-medium text-white">Confirm Password</label>
+          <input type='password' name='passwordConfirm' className="input" required placeholder="Confirm Password" minLength={8}/>
+
           <label className="text-sm/6 font-medium text-white">Body Weight (in KG, for Calculation of Calories Burned)</label>
           <input type='number' name='weight' className="input validator" step={0.01} min={0} required placeholder="Weight in KG"/>
           <p className="validator-hint text-red-500">Weight must be greater than 0</p>
@@ -120,6 +123,9 @@ export const SignUpPage: FC = () => {
           <label className="text-sm/6 font-medium text-white">Password</label>
           <input type='password' name='password' className="input validator" required placeholder="Password" title="Must be more than 8 characters" pattern="[A-Za-z0-9]{8,}" minLength={8}/>
           <p className="validator-hint text-red-500">Must be more than 8 characters</p>
+
+          <label className="text-sm/6 font-medium text-white">Confirm Password</label>
+          <input type='password' name='passwordConfirm' className="input" required placeholder="Confirm Password" minLength={8}/>
 
           <label className="text-sm/6 font-medium text-white">Body Weight (in KG, for Calculation of Calories Burned)</label>
           <input type='number' name='weight' className="input validator" step={0.01} min={0} required placeholder="Weight in KG"/>
