@@ -5,11 +5,13 @@ import { useAtom } from 'jotai';
 import { userAtom } from '../atoms/userAtom';
 import { errorAtom } from '../atoms/errorAtom';
 import { useNavigate } from 'react-router';
+import { loadingAtom } from "../atoms/loadingAtom";
 import { toast } from "react-toastify";
 
 export const SignUpPage: FC = () => {
   const navigate = useNavigate()
   const [user,setUser] = useAtom(userAtom);
+  const [loading, setLoading] = useAtom(loadingAtom)
   const [error,setError] = useAtom(errorAtom)
   
   const handleUserSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -30,17 +32,23 @@ export const SignUpPage: FC = () => {
     // Remove passwordConfirm before sending to backend
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { passwordConfirm, ...submitData } = data;
-    const result = await signUp(submitData);
-    if (result && result.payload) {
-      setUser(result.payload);
-      toast.success("Account Successfully Created. Redirecting to Dashboard...")
-      setError(null);
-      setTimeout(() => {
-        navigate(`/`);
-      }, 1500);
-    } else {
-      setError("Sign Up Failed. Please try again.");
-      return;
+    setLoading(true)
+    try{
+      const result = await signUp(submitData);
+      if (result && result.payload) {
+        setUser(result.payload);
+        toast.success("Account Successfully Created. Redirecting to Dashboard...")
+        setError(null);
+        setTimeout(() => {
+          navigate(`/`);
+        }, 1500);
+      } else {
+        setError("Sign Up Failed. Please try again.");
+      }
+    } catch(err){
+      setError("Server Error: " + err)
+    } finally{
+      setLoading(false)
     }
   }
   
@@ -62,16 +70,22 @@ export const SignUpPage: FC = () => {
     // Remove passwordConfirm before sending to backend
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { passwordConfirm, ...submitData } = data;
-    const result = await adminSignUp(user?.token ?? "", submitData);
-    if (result) {
-      toast.success("Admin Account Successfully Created. Redirecting to Dashboard...")
-      setError(null);
-      setTimeout(() => {
-        navigate(`/`);
-      }, 1500);
-    } else {
-      setError("Admin Account Creation Failed. Please try again.");
-      return;
+    setLoading(true)
+    try{
+      const result = await adminSignUp(user?.token ?? "", submitData);
+      if (result) {
+        toast.success("Admin Account Successfully Created. Redirecting to Dashboard...")
+        setError(null);
+        setTimeout(() => {
+          navigate(`/`);
+        }, 1500);
+      } else {
+        setError("Admin Account Creation Failed. Please try again.");
+      }
+    } catch (err){
+      setError("Server Error: " + err)
+    } finally{
+      setLoading(false)
     }
   }
 
@@ -102,7 +116,10 @@ export const SignUpPage: FC = () => {
           <input type='number' name='weight' className="input validator" step={0.01} min={0} required placeholder="Weight in KG"/>
           <p className="validator-hint text-red-500">Weight must be greater than 0</p>
 
-          <button className="btn btn-neutral mt-4">Submit</button>
+          <div className="flex gap-4">
+            <button type="submit" className="btn btn-neutral mt-4" disabled={loading}>{loading ? "Submitting..." : "Submit"}</button>
+            <button type="button" className="btn btn-neutral mt-4" onClick={() => navigate("/")}>Back</button>
+          </div>
       </fieldset>
     </form>
   </div>
@@ -131,7 +148,10 @@ export const SignUpPage: FC = () => {
           <input type='number' name='weight' className="input validator" step={0.01} min={0} required placeholder="Weight in KG"/>
           <p className="validator-hint text-red-500">Weight must be greater than 0</p>
 
-          <button className="btn btn-neutral mt-4">Submit</button>
+          <div className="flex gap-4">
+            <button type="submit" className="btn btn-neutral mt-4" disabled={loading}>{loading ? "Submitting..." : "Submit"}</button>
+            <button type="button" className="btn btn-neutral mt-4" onClick={() => navigate("/")}>Back</button>
+          </div>
       </fieldset>
     </form>
   </div>

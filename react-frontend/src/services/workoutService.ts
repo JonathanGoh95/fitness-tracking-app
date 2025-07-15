@@ -56,10 +56,11 @@ const fetchOneWorkout = async (token: string, workoutId: number): Promise<FetchW
 
 const updateWorkout = async (token: string, workoutId: number, data: AddEditWorkout)=> {
   try {
-    const response = await axios.put(`${BASE_URL}/${workoutId}/edit`, {
+    const response = await axios.put(`${BASE_URL}/${workoutId}/edit`, data, {
     headers: {
       Authorization: `Bearer ${token}`,
-    }, data});
+    }}
+    );
     // Axios will throw error if status is not of 2XX, so additional checks are not needed 
     // if (response.statusText !== "OK") {
     //   throw new Error(`Response status: ${response.status}`);

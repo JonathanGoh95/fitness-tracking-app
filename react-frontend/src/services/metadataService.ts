@@ -13,7 +13,6 @@ const getWorkoutMetadata = async (token: string): Promise<WorkoutMetadata> => {
     // if (response.statusText !== "OK") {
     //   throw new Error(`Response status: ${response.status}`);
     // }
-
     return response.data as WorkoutMetadata;
   } catch (error) {
     console.error("Error fetching workout metadata: ", error);

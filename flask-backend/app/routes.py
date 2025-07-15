@@ -280,6 +280,10 @@ def get_workout(current_user, workoutId):
 @token_required
 def update_workout(current_user, workoutId):
     update_workout_data = request.get_json()
+    # Validation for required fields
+    missing = validate_fields(update_workout_data, ['workout_type_id', 'duration_mins', 'calories_burned', 'workout_date'])
+    if missing:
+        return jsonify({'error': f"Missing fields: {', '.join(missing)}"}), 400
     workout_type_id = update_workout_data.get('workout_type_id')
     duration_mins = update_workout_data.get('duration_mins')
     calories_burned = update_workout_data.get('calories_burned')
@@ -291,8 +295,7 @@ def update_workout(current_user, workoutId):
                 "UPDATE workouts SET workout_type_id = %s, duration_mins = %s, calories_burned = %s, workout_date = %s WHERE id = %s AND user_id = %s",
                 (workout_type_id, duration_mins, calories_burned, workout_date, workoutId, current_user['id'])
             )
-            updated = cur.fetchone()
-            if not updated:
+            if cur.rowcount == 0:
                 return jsonify({'error': 'Workout not updated/authorized.'}), 404
             db.commit()
         return jsonify({'message': 'Workout Updated Successfully!'}), 200
@@ -349,6 +352,29 @@ def get_user(current_user, userId):
             'role': row[4],
         }
         return jsonify(user_data)
+    except Exception as err:
+        return jsonify({"error": str(err)}), 500
+
+# Update User
+@user_blueprint.route('/<int:userId>/edit', methods=['PUT'])
+@token_required
+def update_user(current_user, userId):
+    if current_user.get('user_role') != 'admin' and current_user.get('id') != userId:
+        return jsonify({"error": "Not authorized to edit user account"}), 403
+    user_data = request.get_json()
+    username = user_data.get('username')
+    email = user_data.get('email')
+    user_weight = user_data.get('user_weight')
+    db = get_db()
+    try:
+        with db.cursor() as cur:
+            cur.execute(
+            "UPDATE users SET username = %s, email = %s, user_weight = %s WHERE id = %s", (username, email, user_weight, userId)
+            )
+            if cur.rowcount == 0:
+                return jsonify({"error": "User not updated/authorized"}), 404
+        db.commit()
+        return jsonify({'message': 'User Updated Successfully!'}), 200
     except Exception as err:
         return jsonify({"error": str(err)}), 500
     

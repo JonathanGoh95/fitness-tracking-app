@@ -4,11 +4,13 @@ import { useAtom, useSetAtom } from 'jotai';
 import { userAtom } from '../atoms/userAtom';
 import { errorAtom } from '../atoms/errorAtom';
 import { useNavigate } from 'react-router';
+import { loadingAtom } from "../atoms/loadingAtom";
 import { toast } from "react-toastify";
 
 export const SignInPage: FC = () => {
   const navigate = useNavigate()
   const setUser = useSetAtom(userAtom);
+  const [loading, setLoading] = useAtom(loadingAtom)
   const [error,setError] = useAtom(errorAtom)
   
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -18,18 +20,23 @@ export const SignInPage: FC = () => {
       username: formData.get("username") as string,
       password: formData.get("password") as string,
     };
-
-    const result = await signIn(data);
-    if (result && result.payload) {
-      setUser(result.payload);
-      toast.success("Sign In Successful. Redirecting to Dashboard...")
-      setError(null);
-      setTimeout(() => {
-        navigate(`/`);
-      }, 1500);
-    } else {
-      setError("Sign In failed. Please try again.");
-      return;
+    setLoading(true)
+    try{
+      const result = await signIn(data);
+      if (result && result.payload) {
+        setUser(result.payload);
+        toast.success("Sign In Successful. Redirecting to Dashboard...")
+        setError(null);
+        setTimeout(() => {
+          navigate(`/`);
+        }, 1500);
+      } else {
+        setError("Sign In failed. Please try again.");
+      }
+    } catch (err) {
+      setError("Server Error: " + err);
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -43,9 +50,12 @@ export const SignInPage: FC = () => {
           <input type='text' name='username' required className="input" placeholder="Username"/>
 
           <label className="text-sm/6 font-medium text-white">Password</label>
-          <input type='password' name='password' required className="Password"/>
+          <input type='password' name='password' required className="input"/>
 
-          <button className="btn btn-neutral mt-4">Submit</button>
+          <div className="flex gap-4">
+            <button type="submit" className="btn btn-neutral mt-4" disabled={loading}>{loading ? "Submitting..." : "Submit"}</button>
+            <button type="button" className="btn btn-neutral mt-4" onClick={() => navigate("/")}>Back</button>
+          </div>
       </fieldset>
     </form>
   </div>

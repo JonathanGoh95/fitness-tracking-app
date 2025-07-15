@@ -14,6 +14,12 @@ export interface UserSignUp {
   user_weight: number;
 }
 
+export interface UpdateUser {
+  username: string;
+  email: string;
+  user_weight: number;
+}
+
 export interface UserSignIn {
   username: string;
   password: string;
