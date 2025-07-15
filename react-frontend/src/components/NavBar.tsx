@@ -19,11 +19,17 @@ export const NavBar: FC = () => {
         <ul className="menu menu-horizontal px-1">
           <li><p>Welcome, Admin {user.username}</p></li>
           <li><Link to="/sign-up">Add Admin Account</Link></li>
+          <li><Link to="/users">View User Accounts</Link></li>
         </ul>
       </div>
       )}
       {user && user.user_role === 'user' ? (
-      <p>Welcome, {user.username}</p>
+        <div className="flex-none">
+        <ul className="menu menu-horizontal px-1">
+          <li><p>Welcome, {user.username}</p></li>
+          <li><Link to={`/users/${user.id}/edit`}>Edit Profile</Link></li>
+        </ul>
+      </div>
       ):(
       <div className="flex-none">
         <ul className="menu menu-horizontal px-1">
