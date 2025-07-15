@@ -91,7 +91,7 @@ export const WorkoutFormPage: FC<WorkoutFormPageProps> = ({workoutId}) => {
 
   return (
   <>
-  {user && !isEditing ? (
+  {user ? (
     <div className="w-full max-w-lg px-4">
     <form onSubmit={handleSubmit}>
       <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4">
@@ -102,7 +102,10 @@ export const WorkoutFormPage: FC<WorkoutFormPageProps> = ({workoutId}) => {
             className="select"
             required
             value={selectedCategoryId ?? ""}
-            onChange={e => setSelectedCategoryId(Number(e.target.value))}
+            onChange={e => {
+              setSelectedCategoryId(Number(e.target.value))
+              setSelectedWorkoutTypeId(null)
+            }}
           >
             <option value="" disabled>Select a workout category</option>
             {data?.categories.map(cat => (
@@ -134,6 +137,7 @@ export const WorkoutFormPage: FC<WorkoutFormPageProps> = ({workoutId}) => {
             placeholder="Input Workout Duration (at least 1)"
             min={1}
             title="Must be at least 1"
+            value={duration}
             onChange={e => setDuration(Number(e.target.value))}
           />
           <p className="validator-hint">Value must be at least 1</p>
@@ -167,7 +171,7 @@ export const WorkoutFormPage: FC<WorkoutFormPageProps> = ({workoutId}) => {
     </form>
   </div>)
   : (
-    <h1>Sign Up/Sign In to add/create your workout!</h1>
+    <h1>Sign Up/Sign In to add/create your workout(s)!</h1>
   )}
   </>
   );
