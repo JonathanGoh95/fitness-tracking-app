@@ -7,11 +7,11 @@ const BASE_URL = `${import.meta.env.VITE_BACK_END_SERVER_URL}`;
 const signUp = async (data: UserSignUp) => {
   try {
     const response = await axios.post(`${BASE_URL}/sign-up`, data);
-    if (response.statusText !== "OK") {
-      throw new Error(`Response status: ${response.status}`);
-    }
+    // Axios will throw error if status is not of 2XX, so additional checks are not needed 
+    // if (response.statusText !== "OK") {
+    //   throw new Error(`Response status: ${response.status}`);
+    // }
     const token:string = response.data.token
-    // const payload: User = jwtDecode(response.data.token)
     // Decode payload using JSON parse and atob method
     const payload: User = JSON.parse(atob(token.split(".")[1]));
     if (token){
@@ -25,13 +25,15 @@ const signUp = async (data: UserSignUp) => {
 
 const adminSignUp = async (token: string, data: UserSignUp) => {
   try {
-    const response = await axios.post(`${BASE_URL}/admin/sign-up`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    }, data});
-    if (response.statusText !== "OK") {
-      throw new Error(`Response status: ${response.status}`);
-    }
+    const response = await axios.post(`${BASE_URL}/admin/sign-up`, data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      }
+    });
+    // Axios will throw error if status is not of 2XX, so additional checks are not needed 
+    // if (response.statusText !== "OK") {
+    //   throw new Error(`Response status: ${response.status}`);
+    // }
     return response.data
   } catch (error) {
     console.error("Error creating admin: ", error);
@@ -42,9 +44,10 @@ const adminSignUp = async (token: string, data: UserSignUp) => {
 const signIn = async (data: UserSignIn) => {
   try {
     const response = await axios.post(`${BASE_URL}/sign-in`, data);
-    if (response.statusText !== "OK") {
-      throw new Error(`Response status: ${response.status}`);
-    }
+    // Axios will throw error if status is not of 2XX, so additional checks are not needed 
+    // if (response.statusText !== "OK") {
+    //   throw new Error(`Response status: ${response.status}`);
+    // }
     const token:string = response.data.token
     const payload: User = JSON.parse(atob(token.split(".")[1]));
     if (token){

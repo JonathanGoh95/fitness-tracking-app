@@ -9,10 +9,10 @@ const getWorkoutMetadata = async (token: string): Promise<WorkoutMetadata> => {
     headers: {
       Authorization: `Bearer ${token}`,
     },});
-
-    if (response.statusText !== "OK") {
-      throw new Error(`Response status: ${response.status}`);
-    }
+    // Axios will throw error if status is not of 2XX, so additional checks are not needed 
+    // if (response.statusText !== "OK") {
+    //   throw new Error(`Response status: ${response.status}`);
+    // }
 
     return response.data as WorkoutMetadata;
   } catch (error) {

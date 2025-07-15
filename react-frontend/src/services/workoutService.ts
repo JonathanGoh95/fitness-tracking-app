@@ -9,11 +9,10 @@ const getWorkouts = async (token: string): Promise<Workout[]> => {
     headers: {
       Authorization: `Bearer ${token}`,
     },});
-
-    if (response.statusText !== "OK") {
-      throw new Error(`Response status: ${response.status}`);
-    }
-
+    // Axios will throw error if status is not of 2XX, so additional checks are not needed 
+    // if (response.statusText !== "OK") {
+    //   throw new Error(`Response status: ${response.status}`);
+    // }
     return response.data;
   } catch (error) {
     console.error("Error fetching workout data: ", error);
@@ -27,11 +26,10 @@ const addWorkout = async (token: string, data: AddEditWorkout) => {
     headers: {
       Authorization: `Bearer ${token}`,
     }, data});
-
-    if (response.statusText !== "OK") {
-      throw new Error(`Response status: ${response.status}`);
-    }
-
+    // Axios will throw error if status is not of 2XX, so additional checks are not needed 
+    // if (response.statusText !== "OK") {
+    //   throw new Error(`Response status: ${response.status}`);
+    // }
     return response.data;
   } catch (error) {
     console.error("Error fetching workout data: ", error);
@@ -45,11 +43,10 @@ const fetchOneWorkout = async (token: string, workoutId: number): Promise<FetchW
     headers: {
       Authorization: `Bearer ${token}`,
     }});
-
-    if (response.statusText !== "OK") {
-      throw new Error(`Response status: ${response.status}`);
-    }
-
+    // Axios will throw error if status is not of 2XX, so additional checks are not needed 
+    // if (response.statusText !== "OK") {
+    //   throw new Error(`Response status: ${response.status}`);
+    // }
     return response.data;
   } catch (error) {
     console.error("Error fetching workout data: ", error);
@@ -63,11 +60,10 @@ const updateWorkout = async (token: string, workoutId: number, data: AddEditWork
     headers: {
       Authorization: `Bearer ${token}`,
     }, data});
-
-    if (response.statusText !== "OK") {
-      throw new Error(`Response status: ${response.status}`);
-    }
-
+    // Axios will throw error if status is not of 2XX, so additional checks are not needed 
+    // if (response.statusText !== "OK") {
+    //   throw new Error(`Response status: ${response.status}`);
+    // }
     return response.data;
   } catch (error) {
     console.error("Error fetching workout data: ", error);
@@ -81,11 +77,10 @@ const deleteWorkout = async (token: string, workoutId: number) => {
     headers: {
       Authorization: `Bearer ${token}`,
     },});
-
-    if (response.statusText !== "OK") {
-      throw new Error(`Response status: ${response.status}`);
-    }
-
+    // Axios will throw error if status is not of 2XX, so additional checks are not needed 
+    // if (response.statusText !== "OK") {
+    //   throw new Error(`Response status: ${response.status}`);
+    // }
     return response.data;
   } catch (error) {
     console.error("Error fetching workout data: ", error);

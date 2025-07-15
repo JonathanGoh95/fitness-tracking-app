@@ -299,7 +299,7 @@ def update_workout(current_user, workoutId):
     except Exception as err:
         return jsonify({"error": str(err)}), 500
 
-# Fetch User
+# Fetch Users
 @user_blueprint.route('/', methods=['GET'])
 @token_required
 def get_users(current_user):
@@ -323,6 +323,32 @@ def get_users(current_user):
         for u in users
     ]
         return jsonify(users_data)
+    except Exception as err:
+        return jsonify({"error": str(err)}), 500
+
+# Fetch User
+@user_blueprint.route('/<int:userId>', methods=['GET'])
+@token_required
+def get_user(current_user, userId):
+    if current_user.get('user_role') != 'admin':
+        return jsonify({"error": "Not authorized to view user account"}), 403
+    db = get_db()
+    try:
+        with db.cursor() as cur:
+            cur.execute(
+            "SELECT id, username, email, user_weight, user_role FROM users WHERE id = %s", (userId,)
+            )
+            row = cur.fetchone()
+            if not row:
+                return jsonify({"error": "User not found"}), 404
+        user_data = {
+            'id': row[0],
+            'username': row[1],
+            'email': row[2],
+            'user_weight': row[3],
+            'role': row[4],
+        }
+        return jsonify(user_data)
     except Exception as err:
         return jsonify({"error": str(err)}), 500
     
