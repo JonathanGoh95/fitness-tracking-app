@@ -77,7 +77,7 @@ export const SignUpPage: FC = () => {
 
   return (
   <>
-  {user && user.role === 'admin' ? (
+  {user && user.user_role === 'admin' ? (
     <div className="w-full max-w-lg px-4">
     <form onSubmit={handleAdminSubmit}>
       <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4">

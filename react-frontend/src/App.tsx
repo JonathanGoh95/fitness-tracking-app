@@ -8,6 +8,8 @@ import { NavBar } from "./components/NavBar";
 import { WorkoutFormPage } from "./pages/WorkoutFormPage";
 import { EditWorkoutPage } from "./pages/EditWorkoutPage";
 import { ToastContainer } from "react-toastify";
+import { UserListPage } from "./pages/UserListPage";
+import { EditUserPage } from "./pages/EditUserPage";
 import "./App.css";
 
 export const App = () => {
@@ -22,6 +24,8 @@ export const App = () => {
         <Route path="/workouts/:workoutId" element={<WorkoutItem />} />
         <Route path="/workouts/new" element={<WorkoutFormPage />} />
         <Route path="/workouts/:workoutId/edit" element={<EditWorkoutPage />} />
+        <Route path="/users" element={<UserListPage />} />
+        <Route path="/users/:userId/edit" element={<EditUserPage />} />
       </Routes>
       {/* Toastify Container for Visual Customization and Appearance in Browser */}
       <ToastContainer

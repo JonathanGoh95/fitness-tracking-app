@@ -21,7 +21,7 @@ CREATE TABLE workout_types (
 
 CREATE TABLE workouts (
     id SERIAL PRIMARY KEY,
-    user_id INTEGER NOT NULL REFERENCES users(id),
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     workout_type_id INTEGER NOT NULL REFERENCES workout_types(id),
     duration_mins INTEGER NOT NULL,
     calories_burned INTEGER NOT NULL,

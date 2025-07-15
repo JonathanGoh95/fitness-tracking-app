@@ -12,12 +12,12 @@ export const Dashboard: FC = () => {
     <div>
       <img className="rounded w-5/6 h-1/3" src={coverImage}/>
     </div>
-    {user && user.role === 'user' ? (
+    {user && user.user_role === 'user' ? (
       <div className="flex-col content-center">
         <h1>Welcome Back, {user.username}!</h1>
         <p>Here is an overview of your latest activities:</p>
       </div>
-    ) : user && user.role === 'admin' ? (
+    ) : user && user.user_role === 'admin' ? (
       <div className="flex-col content-center">
         <h1>Welcome Back, Admin {user.username}!</h1>
         <p>Create additional admin accounts or view/edit user accounts!</p>

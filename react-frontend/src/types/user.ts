@@ -1,8 +1,9 @@
 export interface User {
   id: number;
   username: string;
+  email?: string;
   user_weight: number;
-  role: "user" | "admin";
+  user_role: "user" | "admin";
   token?: string;
 }
 

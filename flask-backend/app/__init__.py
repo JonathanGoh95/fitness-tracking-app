@@ -16,8 +16,10 @@ def create_app():
     # Import and register blueprints for routes
     from app.routes import api_blueprint   # Import Blueprint from Flask in Routes
     from app.routes import workout_blueprint  # Import Blueprint from Flask in Routes
+    from app.routes import user_blueprint  # Import Blueprint from Flask in Routes
     app.register_blueprint(api_blueprint)
     app.register_blueprint(workout_blueprint)
+    app.register_blueprint(user_blueprint)
     
     app.teardown_appcontext(close_db)
     

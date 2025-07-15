@@ -59,7 +59,7 @@ export const WorkoutListPage: FC = () => {
     {/* head */}
     <thead>
       <tr>
-        <th>ID</th>
+        <th>Workout ID</th>
         <th>Workout Duration (mins)</th>
         <th>Calories Burned</th>
         <th>Workout Date</th>
@@ -69,9 +69,9 @@ export const WorkoutListPage: FC = () => {
       </tr>
     </thead>
     <tbody>
-    {data?.map((w,idx)=>(
-      <tr key={idx}>
-          <th><Link to={`/workouts/${w.id}`}>{idx+1}</Link></th>
+    {data?.map((w)=>(
+      <tr key={w.id}>
+          <th><Link to={`/workouts/${w.id}`}>{w.id}</Link></th>
           <td>{w.duration_mins}</td>
           <td>{w.calories_burned}</td>
           {/* Date Formatting for Frontend */}

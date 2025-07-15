@@ -75,7 +75,7 @@ const updateWorkout = async (token: string, workoutId: number, data: AddEditWork
   }
 };
 
-const deleteWorkout = async (token: string, workoutId: number): Promise<Workout[]> => {
+const deleteWorkout = async (token: string, workoutId: number) => {
   try {
     const response = await axios.delete(`${BASE_URL}/workouts/${workoutId}`, {
     headers: {

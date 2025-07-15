@@ -12,6 +12,7 @@ from app.db import get_db
 
 api_blueprint = Blueprint('api', __name__)
 workout_blueprint = Blueprint('workouts', __name__, url_prefix="/workouts")
+user_blueprint = Blueprint('users', __name__, url_prefix="/users")
 
 def validate_fields(data, required_fields):
     missing = [field for field in required_fields if field not in data or not data[field]]
@@ -185,11 +186,10 @@ def delete_user_workout(current_user, workoutId):
     try:
         with db.cursor() as cur:
             cur.execute(
-            "DELETE FROM workouts WHERE id = %s AND user_id = %s",(workoutId, current_user['id'])
-        )
-        deleted = cur.fetchone()
-        if not deleted:
-            return jsonify({"error": "Workout not found/authorized."}), 404
+                "DELETE FROM workouts WHERE id = %s AND user_id = %s",(workoutId, current_user['id'])
+            )
+            if cur.rowcount == 0:
+                return jsonify({"error": "Workout not found/authorized."}), 404
         db.commit()
         return jsonify({"message": "Workout deleted successfully."}), 200
     except Exception as err:
@@ -296,5 +296,51 @@ def update_workout(current_user, workoutId):
                 return jsonify({'error': 'Workout not updated/authorized.'}), 404
             db.commit()
         return jsonify({'message': 'Workout Updated Successfully!'}), 200
+    except Exception as err:
+        return jsonify({"error": str(err)}), 500
+
+# Fetch User
+@user_blueprint.route('/', methods=['GET'])
+@token_required
+def get_users(current_user):
+    if current_user.get('user_role') != 'admin':
+        return jsonify({"error": "Not authorized to view user accounts"}), 403
+    db = get_db()
+    try:
+        with db.cursor() as cur:
+            cur.execute(
+            "SELECT id, username, email, user_weight, user_role FROM users"
+            )
+            users = cur.fetchall()
+        users_data = [
+        {
+            'id': u[0],
+            'username': u[1],
+            'email': u[2],
+            'user_weight': u[3],
+            'role': u[4],
+        }
+        for u in users
+    ]
+        return jsonify(users_data)
+    except Exception as err:
+        return jsonify({"error": str(err)}), 500
+    
+# Delete User
+@user_blueprint.route('/<int:userId>', methods=['DELETE'])
+@token_required
+def delete_user(current_user, userId):
+    if current_user.get('user_role') != 'admin':
+        return jsonify({"error": "Not authorized to delete user accounts"}), 403
+    db = get_db()
+    try:
+        with db.cursor() as cur:
+            cur.execute(
+                "DELETE FROM users WHERE id = %s",(userId,)
+            )
+            if cur.rowcount == 0:
+                return jsonify({"error": "User not found/authorized."}), 404
+        db.commit()
+        return jsonify({"message": "User deleted successfully."}), 200
     except Exception as err:
         return jsonify({"error": str(err)}), 500

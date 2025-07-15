@@ -14,7 +14,7 @@ export const NavBar: FC = () => {
     <div className="flex gap-4">
       <Link to='/workouts'>View Workouts</Link>
       <Link to='/workouts/new'>Add Workout</Link>
-      {user && user.role === 'admin' && (
+      {user && user.user_role === 'admin' && (
         <div className="flex-none">
         <ul className="menu menu-horizontal px-1">
           <li><p>Welcome, Admin {user.username}</p></li>
@@ -22,7 +22,7 @@ export const NavBar: FC = () => {
         </ul>
       </div>
       )}
-      {user && user.role === 'user' ? (
+      {user && user.user_role === 'user' ? (
       <p>Welcome, {user.username}</p>
       ):(
       <div className="flex-none">
