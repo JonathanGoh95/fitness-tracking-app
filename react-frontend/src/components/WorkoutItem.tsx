@@ -75,6 +75,7 @@ export const WorkoutItem: FC = () => {
           >
             Delete
           </button>
+          <button className="btn btn-neutral mt-4" onClick={() => navigate("/workouts")}>Back</button>
         </div>
       </div>
     </div>

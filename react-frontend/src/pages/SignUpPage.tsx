@@ -103,11 +103,8 @@ export const SignUpPage: FC = () => {
       </fieldset>
     </form>
   </div>
-  ):(
-    <h1>As you are not an admin, you are not authorized to create admin accounts!</h1>
-  )}
-  {!user &&
-  <div className="w-full max-w-lg px-4">
+  ) : !user ? (
+    <div className="w-full max-w-lg px-4">
     <form onSubmit={handleUserSubmit}>
       <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4">
         <legend className="fieldset-legend">Sign Up</legend>
@@ -131,7 +128,10 @@ export const SignUpPage: FC = () => {
           <button className="btn btn-neutral mt-4">Submit</button>
       </fieldset>
     </form>
-  </div>}
+  </div>
+  ) : (
+    <h1>As you are not an admin, you are not authorized to create admin accounts!</h1>
+  )}
   </>
   );
 };
