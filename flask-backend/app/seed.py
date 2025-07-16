@@ -26,7 +26,7 @@ def seed():
                     {"username": "bob", "email": "bob@example.com", "password": "securepass", "user_weight": 70.5, "user_role": "admin"},
                 ]
             for user in users:
-                hashed_pw = bcrypt.hashpw(bytes(user["password"], 'utf-8'), bcrypt.gensalt())
+                hashed_pw = bcrypt.hashpw(bytes(user["password"], 'utf-8'), bcrypt.gensalt()).decode('utf-8')
                 cur.execute(
                     "INSERT INTO users (username, email, password_hash, user_weight, user_role) VALUES (%s, %s, %s, %s, %s) RETURNING id",
                     (user["username"], user["email"], hashed_pw, user["user_weight"], user["user_role"])
@@ -39,7 +39,7 @@ def seed():
                     {"username": "Jane", "email": "adminjane@adminexample.com", "password": "securepass456", "user_weight": 48.0, "user_role": "admin"},
                 ]
             for admin in admins:
-                hashed_pw = bcrypt.hashpw(bytes(admin["password"], 'utf-8'), bcrypt.gensalt())
+                hashed_pw = bcrypt.hashpw(bytes(admin["password"], 'utf-8'), bcrypt.gensalt()).decode('utf-8')
                 cur.execute(
                     "INSERT INTO users (username, email, password_hash, user_weight, user_role) VALUES (%s, %s, %s, %s, %s) RETURNING id",
                     (admin["username"], admin["email"], hashed_pw, admin["user_weight"], admin["user_role"])

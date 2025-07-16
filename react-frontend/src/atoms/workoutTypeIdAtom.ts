@@ -1,2 +1,2 @@
 import { atom } from "jotai";
-export const workoutTypeIdAtom = atom<number | null>(null);
+export const workoutTypeAtom = atom<string | null>(null);

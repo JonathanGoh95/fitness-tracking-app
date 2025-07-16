@@ -1,8 +1,8 @@
 import { userAtom } from "../atoms/userAtom";
 import { useAtom, useAtomValue } from "jotai";
 import { useWorkoutMetadata } from "../hooks/useWorkoutMetadata";
-import { categoryIdAtom } from "../atoms/categoryIdAtom";
-import { workoutTypeIdAtom } from "../atoms/workoutTypeIdAtom";
+import { categoryAtom } from "../atoms/categoryIdAtom";
+import { workoutTypeAtom } from "../atoms/workoutTypeIdAtom";
 import { durationAtom } from "../atoms/durationAtom";
 import { caloriesBurnedAtom } from "../atoms/caloriesBurnedAtom";
 import { useEffect, type FC } from "react";
@@ -14,7 +14,8 @@ import { toast } from "react-toastify";
 
 export const WorkoutFormPage: FC<WorkoutFormPageProps> = ({workoutId}) => {
   const user = useAtomValue(userAtom)
-  const [selectedWorkoutTypeId, setSelectedWorkoutTypeId] = useAtom(workoutTypeIdAtom);
+  const [selectedCategory, setSelectedCategory] = useAtom(categoryAtom)
+  const [selectedWorkoutType, setSelectedWorkoutType] = useAtom(workoutTypeAtom);
   const [duration, setDuration] = useAtom(durationAtom);
   const [caloriesBurned, setCaloriesBurned] = useAtom(caloriesBurnedAtom); 
   const navigate = useNavigate()
@@ -25,25 +26,39 @@ export const WorkoutFormPage: FC<WorkoutFormPageProps> = ({workoutId}) => {
 
   const { isLoading, error, data } = useWorkoutMetadata()
 
-  const [selectedCategoryId, setSelectedCategoryId] = useAtom(categoryIdAtom)
+  // Derive unique categories from metadata
+  const categories = data ? Array.from(
+    data.reduce((acc, curr) => {
+      acc.add(curr.category_name);
+      return acc;
+    }, new Set<string>())
+  )
+  : [];
+        
+  // Filter workout types by selected category
+  const filteredWorkoutTypes = selectedCategory && data
+  ? data.filter((wt) => wt.category_name === selectedCategory)
+  : [];
 
   // If editing workout, fetch the workout and prefill/set atoms
   useEffect(() => {
-    if (isEditing && workoutId) {
+    if (isEditing && workoutId && user?.token && data) {
       const fetchWorkout = async () => {
         const workout = await fetchOneWorkout(user?.token ?? "", workoutId)
-        setSelectedCategoryId(workout.category_id);
-        setSelectedWorkoutTypeId(workout.workout_type_id);
+        const workoutType = data.find((wt) => wt.id === workout.workout_type_id);
+        setSelectedCategory(workoutType?.category_name ?? "");
+        setSelectedWorkoutType(workoutType?.id? String(workoutType.id) : "");
         setDuration(workout.duration_mins);
       }
       fetchWorkout()
     }
-    }, [isEditing, workoutId, setSelectedCategoryId, setSelectedWorkoutTypeId, setDuration, user?.token]);
+    // eslint-disable-next-line
+  }, [isEditing, workoutId, user?.token, data]);
 
   // Calculate calories burned when workout type or duration changes using useEffect
   useEffect(() => {
-    if (selectedWorkoutTypeId && duration > 0 && data) {
-      const workoutType = data?.workout_types.find(wt => wt.id === selectedWorkoutTypeId);
+    if (selectedWorkoutType && duration > 0 && data) {
+      const workoutType = data.find((wt) => String(wt.id) === selectedWorkoutType && wt.category_name === selectedCategory);
       if (workoutType) {
         // MET formula: MET * weight (kg) * duration (hours)
         const met = workoutType.met_value;
@@ -53,15 +68,18 @@ export const WorkoutFormPage: FC<WorkoutFormPageProps> = ({workoutId}) => {
     } else {
       setCaloriesBurned(0);
     }
-  }, [selectedWorkoutTypeId, duration, data, userWeight, setCaloriesBurned]);
+  }, [selectedWorkoutType, selectedCategory, duration, data, userWeight, setCaloriesBurned]);
 
-  // Filter workout types by selected category
-  const filteredWorkoutTypes = selectedCategoryId
-  ? data?.workout_types.filter(wt => wt.category_id === selectedCategoryId)
-  : [];
   
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!data) return;
+    // Find the selected workout type object to get its ID
+    const workoutTypeObj = data.find(wt => String(wt.id) === selectedWorkoutType);
+    if (!workoutTypeObj) {
+      toast.error("Please select a valid workout type.");
+      return;
+    }
     const formData = new FormData(e.currentTarget);
     const workoutData:AddEditWorkout = {
       user_id: user?.id ?? 0,
@@ -101,15 +119,15 @@ export const WorkoutFormPage: FC<WorkoutFormPageProps> = ({workoutId}) => {
             name="category"
             className="select"
             required
-            value={selectedCategoryId ?? ""}
+            value={selectedCategory ?? ""}
             onChange={e => {
-              setSelectedCategoryId(Number(e.target.value))
-              setSelectedWorkoutTypeId(null)
+              setSelectedCategory(e.target.value)
+              setSelectedWorkoutType("")
             }}
           >
             <option value="" disabled>Select a workout category</option>
-            {data?.categories.map(cat => (
-              <option key={cat.id} value={cat.id}>{cat.category_name}</option>
+            {categories.map((cat) => (
+              <option key={cat} value={cat}>{cat}</option>
             ))}
           </select>
 
@@ -118,9 +136,9 @@ export const WorkoutFormPage: FC<WorkoutFormPageProps> = ({workoutId}) => {
             name="workout_type"
             className="select"
             required
-            disabled={!selectedCategoryId}
-            value={selectedWorkoutTypeId ?? ""}
-            onChange={e => setSelectedWorkoutTypeId(Number(e.target.value))}
+            disabled={!selectedCategory}
+            value={selectedWorkoutType ?? ""}
+            onChange={e => setSelectedWorkoutType(e.target.value)}
           >
             <option value="" disabled>Select a workout type</option>
             {filteredWorkoutTypes?.map(wt => (
@@ -171,7 +189,9 @@ export const WorkoutFormPage: FC<WorkoutFormPageProps> = ({workoutId}) => {
     </form>
   </div>)
   : (
-    <h1>Sign Up/Sign In to add/create your workout(s)!</h1>
+    <div className="flex justify-center text-3xl mt-6 italic">
+      <h1>Sign Up/Sign In to add/create your workout(s)!</h1>
+    </div>
   )}
   </>
   );

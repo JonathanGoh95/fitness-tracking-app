@@ -9,24 +9,26 @@ export const Dashboard: FC = () => {
   const navigate = useNavigate()
 
   return (<>
-    <div>
-      <img className="rounded w-5/6 h-1/3" src={coverImage}/>
+    <div className="flex justify-center w-full h-40 overflow-hidden mb-4">
+      <img className="w-full h-full object-cover rounded-md" src={coverImage} alt="Dashboard Banner"/>
     </div>
     {user && user.user_role === 'user' ? (
-      <div className="flex-col content-center">
+      <div className="flex flex-col items-center justify-self-center min-h-[40vh] text-4xl gap-4 italic">
         <h1>Welcome Back, {user.username}!</h1>
         <p>Here is an overview of your latest activities:</p>
       </div>
     ) : user && user.user_role === 'admin' ? (
-      <div className="flex-col content-center">
+      <div className="flex flex-col items-center justify-self-center min-h-[40vh] text-4xl gap-4 italic">
         <h1>Welcome Back, Admin {user.username}!</h1>
         <p>Create additional admin accounts or view/edit user accounts!</p>
       </div>) : (
     <>
-      <h1>Start Tracking your Fitness Journey and Monitor your Progress easily!</h1>
+      <div className="flex justify-center text-3xl italic my-6">
+        <h1>Start Tracking your Fitness Journey and Monitor your Progress easily!</h1>
+      </div>
       <div className="flex justify-center gap-4">
-        <button className="btn btn-neutral mt-4" onClick={() => navigate("/sign-up")}>Sign Up</button>
-        <button className="btn btn-neutral mt-4" onClick={() => navigate("/sign-in")}>Sign In</button>
+        <button className="btn btn-neutral mt-4 text-lg italic" onClick={() => navigate("/sign-up")}>Sign Up</button>
+        <button className="btn btn-neutral mt-4 text-lg italic" onClick={() => navigate("/sign-in")}>Sign In</button>
       </div>
     </>
     )}

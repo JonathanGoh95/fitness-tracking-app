@@ -107,7 +107,9 @@ export const WorkoutListPage: FC = () => {
   </dialog>
   </>
   ) : (
-    <h1>Sign Up/Sign In to view your workouts!</h1>
+    <div className="flex justify-center text-3xl mt-6 italic">
+      <h1>Sign Up/Sign In to view your workouts!</h1>
+    </div>
   )}
   </>
   );

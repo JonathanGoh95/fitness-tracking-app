@@ -33,7 +33,7 @@ def sign_up():
     user_role = new_user_data.get('user_role', 'user')
     user_weight = new_user_data.get('user_weight')
     # Create hashed password using bcrypt
-    hashed_password = bcrypt.hashpw(bytes(password, 'utf-8'), bcrypt.gensalt())
+    hashed_password = bcrypt.hashpw(bytes(password, 'utf-8'), bcrypt.gensalt()).decode('utf-8')
     db = get_db()
     try:
         with db.cursor() as cur:
@@ -80,7 +80,7 @@ def admin_sign_up(current_user):
     user_role = 'admin'
     user_weight = new_admin_data.get('user_weight')
     # Create hashed password using bcrypt
-    hashed_password = bcrypt.hashpw(bytes(password, 'utf-8'), bcrypt.gensalt())
+    hashed_password = bcrypt.hashpw(bytes(password, 'utf-8'), bcrypt.gensalt()).decode('utf-8')
     
     db = get_db()
     try:
@@ -119,15 +119,15 @@ def sign_in():
         with db.cursor() as cur:
             cur.execute("SELECT id, username, password_hash, user_weight, user_role FROM users WHERE username = %s", (username,))
             user = cur.fetchone()
-            
+            print(user)
             if not user:
                 return jsonify({"error": "Invalid credentials."}), 401
             
             password_is_valid = bcrypt.checkpw(
                 bytes(password, 'utf-8'),
-                bytes(user[2], 'utf-8')
+                user[2].encode('utf-8')
             )
-            
+            print(password_is_valid)
             if not password_is_valid:
                 return jsonify({"error": "Invalid credentials."}), 401
             
@@ -135,9 +135,10 @@ def sign_in():
         user_info = {
             "id": user[0],
             "username": user[1],
-            "user_weight": user[3],
+            # "user_weight": user[3],
             "user_role": user[4]
         }
+        print(user_info)
         token = jwt.encode(user_info, os.getenv('JWT_SECRET'), algorithm="HS256")
         return jsonify({'message': 'Sign In Successful', 'token': token}), 200
     except Exception as err:
@@ -202,16 +203,22 @@ def get_workout_metadata():
     db = get_db()
     try:
         with db.cursor() as cur:
-            cur.execute("SELECT id, category_name FROM category_types ORDER BY category_name")
-            categories = [{"id": c[0], "category_name": c[1]} for c in cur.fetchall()]
-            cur.execute("SELECT id, workout_name, met_value, category_id FROM workout_types ORDER BY workout_name")
-            workout_types = [
-                {"id": w[0], "workout_name": w[1], "met_value": w[2],"category_id": w[3]} for w in cur.fetchall()
-            ]
-        return jsonify({
-            "categories": categories,
-            "workout_types": workout_types
-        }), 200
+            cur.execute(
+                """
+                SELECT wt.id, wt.workout_name, wt.met_value, ct.category_name FROM workout_types wt
+                JOIN category_types ct ON wt.category_id = ct.id
+                """)
+            data = cur.fetchall()
+        metadata = [
+        {
+            'id': meta[0],
+            'workout_name': meta[1],
+            'met_value': meta[2],
+            'category_name': meta[3],
+        }
+        for meta in data
+        ]
+        return jsonify(metadata), 200
     except Exception as err:
         return jsonify({"error": str(err)}), 500
     

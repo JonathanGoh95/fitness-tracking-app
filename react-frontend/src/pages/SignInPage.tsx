@@ -41,18 +41,18 @@ export const SignInPage: FC = () => {
   }
 
   return (
-  <div className="w-full max-w-lg px-4">
+  <div className="flex items-center justify-center py-8">
     <form onSubmit={handleSubmit}>
-      <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4">
-        <legend className="fieldset-legend">Sign In</legend>
+      <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-sm border p-4">
+        <legend className="fieldset-legend text-xl italic">Sign In</legend>
         {error && <div className="text-red-500">{error}</div>}
           <label className="text-sm/6 font-medium text-white">Username</label>
           <input type='text' name='username' required className="input" placeholder="Username"/>
 
           <label className="text-sm/6 font-medium text-white">Password</label>
-          <input type='password' name='password' required className="input"/>
+          <input type='password' name='password' required className="input" placeholder="Password"/>
 
-          <div className="flex gap-4">
+          <div className="flex justify-self-center gap-4">
             <button type="submit" className="btn btn-neutral mt-4" disabled={loading}>{loading ? "Submitting..." : "Submit"}</button>
             <button type="button" className="btn btn-neutral mt-4" onClick={() => navigate("/")}>Back</button>
           </div>

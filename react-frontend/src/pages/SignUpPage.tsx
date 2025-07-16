@@ -92,10 +92,10 @@ export const SignUpPage: FC = () => {
   return (
   <>
   {user && user.user_role === 'admin' ? (
-    <div className="w-full max-w-lg px-4">
+    <div className="flex items-center justify-center py-8">
     <form onSubmit={handleAdminSubmit}>
-      <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4">
-        <legend className="fieldset-legend">Create Admin Account</legend>
+      <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-sm border p-4">
+        <legend className="fieldset-legend text-xl italic">Create Admin Account</legend>
         {error && <div className="text-red-500">{error}</div>}
           <label className="text-sm/6 font-medium text-white">Username</label>
           <input type='text' name='username' className="input validator" required placeholder="Username" pattern="[A-Za-z][A-Za-z0-9\-]*" minLength={3} maxLength={30} title="Only letters, numbers or dash"/>
@@ -124,10 +124,10 @@ export const SignUpPage: FC = () => {
     </form>
   </div>
   ) : !user ? (
-    <div className="w-full max-w-lg px-4">
+    <div className="flex items-center justify-center py-8">
     <form onSubmit={handleUserSubmit}>
-      <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4">
-        <legend className="fieldset-legend">Sign Up</legend>
+      <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-sm border p-4">
+        <legend className="fieldset-legend text-xl italic">Sign Up as a New User</legend>
         {error && <div className="text-red-500">{error}</div>}
           <label className="text-sm/6 font-medium text-white">Username</label>
           <input type='text' name='username' className="input validator" required placeholder="Username" pattern="[A-Za-z][A-Za-z0-9\-]*" minLength={3} maxLength={30} title="Only letters, numbers or dash"/>
@@ -145,10 +145,10 @@ export const SignUpPage: FC = () => {
           <input type='password' name='passwordConfirm' className="input" required placeholder="Confirm Password" minLength={8}/>
 
           <label className="text-sm/6 font-medium text-white">Body Weight (in KG, for Calculation of Calories Burned)</label>
-          <input type='number' name='weight' className="input validator" step={0.01} min={0} required placeholder="Weight in KG"/>
+          <input type='number' name='weight' className="input validator" step={0.01} min={0.01} required placeholder="Weight in KG"/>
           <p className="validator-hint text-red-500">Weight must be greater than 0</p>
 
-          <div className="flex gap-4">
+          <div className="flex justify-self-center gap-4">
             <button type="submit" className="btn btn-neutral mt-4" disabled={loading}>{loading ? "Submitting..." : "Submit"}</button>
             <button type="button" className="btn btn-neutral mt-4" onClick={() => navigate("/")}>Back</button>
           </div>

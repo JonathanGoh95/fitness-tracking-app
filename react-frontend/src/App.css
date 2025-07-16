@@ -5,3 +5,16 @@
 @theme {
   --font-manrope: "Manrope", sans-serif;
 }
+
+/* Hide the hint by default */
+.validator-hint {
+  display: none;
+  font-size: 0.875rem;
+  color: #f87171; /* Tailwind's red-500 */
+}
+
+/* Show the hint when the input is invalid and has been interacted with */
+input:invalid:focus + .validator-hint,
+input:invalid:active + .validator-hint {
+  display: block;
+}
