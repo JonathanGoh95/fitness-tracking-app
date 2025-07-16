@@ -151,7 +151,7 @@ dist
 Icon
 
 # Bruno Files
-.bru
+*.bru
 
 # Thumbnails
 ._*
