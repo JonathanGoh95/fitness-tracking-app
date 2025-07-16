@@ -150,6 +150,8 @@ dist
 # Icon must end with two \r
 Icon
 
+# Bruno Files
+.bru
 
 # Thumbnails
 ._*
