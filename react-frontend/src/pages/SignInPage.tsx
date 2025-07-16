@@ -29,7 +29,7 @@ export const SignInPage: FC = () => {
         setError(null);
         setTimeout(() => {
           navigate(`/`);
-        }, 1500);
+        }, 500);
       } else {
         setError("Sign In failed. Please try again.");
       }

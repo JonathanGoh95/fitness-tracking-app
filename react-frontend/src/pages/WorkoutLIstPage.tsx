@@ -51,11 +51,13 @@ export const WorkoutListPage: FC = () => {
   return (
   <>
   {user ? (
-    <>
-    <h1>Welcome, {user.username}</h1>
+    <div className="max-w-5xl mx-auto p-6">
+    <div className="flex flex-col justify-self-center items-center mb-6 text-3xl italic">
+      <h1>Welcome, {user.username}</h1>
+    </div>
     {data?.length !== 0 ? (
-    <div className="overflow-x-auto">
-    <table className="table">
+    <div className="overflow-x-auto rounded-lg shadow">
+    <table className="table w-full border border-base-300">
     {/* head */}
     <thead>
       <tr>
@@ -105,7 +107,7 @@ export const WorkoutListPage: FC = () => {
       <button className="btn btn-neutral" type="button" onClick={closeDeleteModal}>Close</button>
     </form>
   </dialog>
-  </>
+  </div>
   ) : (
     <div className="flex justify-center text-3xl mt-6 italic">
       <h1>Sign Up/Sign In to view your workouts!</h1>

@@ -52,7 +52,7 @@ export const UserListPage: FC = () => {
           <div className="max-w-4xl mx-auto p-6">
             <div className="flex flex-col justify-self-center items-center mb-6 italic">
               <h1 className="text-3xl font-bold mb-2">Welcome, Admin {user.username}</h1>
-              <p className="text-lg text-gray-400">Manage user accounts below.</p>
+              <p className="text-lg text-gray-400">Manage user accounts below:</p>
             </div>
             {data?.length !== 0 ? (
               <div className="overflow-x-auto rounded-lg shadow">

@@ -119,7 +119,6 @@ def sign_in():
         with db.cursor() as cur:
             cur.execute("SELECT id, username, password_hash, user_weight, user_role FROM users WHERE username = %s", (username,))
             user = cur.fetchone()
-            print(user)
             if not user:
                 return jsonify({"error": "Invalid credentials."}), 401
             
@@ -127,7 +126,6 @@ def sign_in():
                 bytes(password, 'utf-8'),
                 user[2].encode('utf-8')
             )
-            print(password_is_valid)
             if not password_is_valid:
                 return jsonify({"error": "Invalid credentials."}), 401
             
@@ -135,10 +133,9 @@ def sign_in():
         user_info = {
             "id": user[0],
             "username": user[1],
-            # "user_weight": user[3],
+            "user_weight": float(user[3]),
             "user_role": user[4]
         }
-        print(user_info)
         token = jwt.encode(user_info, os.getenv('JWT_SECRET'), algorithm="HS256")
         return jsonify({'message': 'Sign In Successful', 'token': token}), 200
     except Exception as err:
@@ -327,7 +324,7 @@ def get_users(current_user):
             'id': u[0],
             'username': u[1],
             'email': u[2],
-            'user_weight': u[3],
+            'user_weight': float(u[3]),
             'role': u[4],
         }
         for u in users
