@@ -196,7 +196,7 @@ def delete_user_workout(current_user, workoutId):
 # Fetch Category Types and Workout Types Metadata for populating Workout Form fields
 @workout_blueprint.route('/metadata', methods=['GET'])
 @token_required
-def get_workout_metadata():
+def get_workout_metadata(current_user):
     db = get_db()
     try:
         with db.cursor() as cur:

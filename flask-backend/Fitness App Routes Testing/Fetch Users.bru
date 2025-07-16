@@ -1,0 +1,15 @@
+meta {
+  name: Fetch Users
+  type: http
+  seq: 11
+}
+
+get {
+  url: http://localhost:5000/users
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwidXNlcm5hbWUiOiJib2IiLCJ1c2VyX3dlaWdodCI6NzAuNSwidXNlcl9yb2xlIjoiYWRtaW4ifQ.3depeQVwg2g5NUZ6zGWY3sWJq_Uj8tHtqKmF1PMK0X4
+}

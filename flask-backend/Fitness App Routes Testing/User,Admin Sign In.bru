@@ -1,0 +1,18 @@
+meta {
+  name: User,Admin Sign In
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://localhost:5000/sign-in
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "username": "bob",
+    "password": "securepass"
+  }
+}

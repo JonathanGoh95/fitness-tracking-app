@@ -1,6 +1,6 @@
 # Middleware for decoding token and will be included in each route that checks for a signed-in user
 from functools import wraps
-from flask import request, jsonify, g
+from flask import request, jsonify
 import jwt
 import os
 
@@ -13,8 +13,8 @@ def token_required(f):
         try:
             token = authorization_header.split(' ')[1]
             token_data = jwt.decode(token, os.getenv('JWT_SECRET'), algorithms=["HS256"])
-            g.user = token_data
+            current_user = token_data
         except Exception as err:
             return jsonify({"err": str(err)}), 500
-        return f(*args, **kwargs)
+        return f(current_user, *args, **kwargs)
     return decorated_function

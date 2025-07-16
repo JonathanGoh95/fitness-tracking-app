@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "Fitness App Routes Testing",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}
