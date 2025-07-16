@@ -51,7 +51,7 @@ def sign_up():
         user_info = {
             "id": user[0],
             "username": user[1],
-            "user_weight": user[2],
+            "user_weight": float(user[2]),
             "user_role": user[3]
         }
         token = jwt.encode(user_info, os.getenv('JWT_SECRET'), algorithm="HS256")
@@ -352,7 +352,7 @@ def get_user(current_user, userId):
             'id': row[0],
             'username': row[1],
             'email': row[2],
-            'user_weight': row[3],
+            'user_weight': float(row[3]),
             'role': row[4],
         }
         return jsonify(user_data)
