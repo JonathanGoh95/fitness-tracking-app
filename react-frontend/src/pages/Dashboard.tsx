@@ -2,16 +2,15 @@ import type { FC } from "react";
 import { useAtomValue } from "jotai";
 import { userAtom } from "../atoms/userAtom";
 import { useNavigate } from "react-router";
-import coverImage from "../../images/cover_image.jpg"
+import { BannerImage } from "../components/BannerImage";
 
 export const Dashboard: FC = () => {
   const user = useAtomValue(userAtom)
   const navigate = useNavigate()
 
-  return (<>
-    <div className="flex justify-center w-full h-40 overflow-hidden mb-4">
-      <img className="w-full h-full object-cover rounded-md" src={coverImage} alt="Dashboard Banner"/>
-    </div>
+  return (
+  <>
+    <BannerImage />
     {user && user.user_role === 'user' ? (
       <div className="flex flex-col items-center justify-self-center min-h-[40vh] text-4xl gap-4 italic">
         <h1>Welcome Back, {user.username}!</h1>
@@ -32,5 +31,5 @@ export const Dashboard: FC = () => {
       </div>
     </>
     )}
-    </>
+  </>
   )};

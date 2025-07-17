@@ -120,14 +120,14 @@ def sign_in():
             cur.execute("SELECT id, username, password_hash, user_weight, user_role FROM users WHERE username = %s", (username,))
             user = cur.fetchone()
             if not user:
-                return jsonify({"error": "Invalid credentials."}), 401
+                return jsonify({"error": "Invalid Credentials."}), 401
             
             password_is_valid = bcrypt.checkpw(
                 bytes(password, 'utf-8'),
                 user[2].encode('utf-8')
             )
             if not password_is_valid:
-                return jsonify({"error": "Invalid credentials."}), 401
+                return jsonify({"error": "Invalid Credentials."}), 401
             
         # Fetch user info to create token payload
         user_info = {

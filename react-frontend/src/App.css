@@ -9,8 +9,16 @@
 /* Hide the hint by default */
 .validator-hint {
   display: none;
+  position: absolute;
+  left: 0;
+  top: 100%;
   font-size: 0.875rem;
   color: #f87171; /* Tailwind's red-500 */
+  background: white;
+  z-index: 10;
+  padding: 2px 4px;
+  border-radius: 4px;
+  white-space: nowrap;
 }
 
 /* Show the hint when the input is invalid and has been interacted with */

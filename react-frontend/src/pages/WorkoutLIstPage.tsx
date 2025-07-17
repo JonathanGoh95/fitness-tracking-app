@@ -8,6 +8,7 @@ import { deleteWorkout } from "../services/workoutService";
 import { deleteIdAtom } from "../atoms/deleteIdAtom";
 // import { useState } from "react";
 import type { FC } from "react";
+import { BannerImage } from "../components/BannerImage";
 
 export const WorkoutListPage: FC = () => {
   const user = useAtomValue(userAtom)
@@ -50,6 +51,7 @@ export const WorkoutListPage: FC = () => {
 
   return (
   <>
+  <BannerImage />
   {user ? (
     <div className="max-w-5xl mx-auto p-6">
     <div className="flex flex-col justify-self-center items-center mb-6 text-3xl italic">

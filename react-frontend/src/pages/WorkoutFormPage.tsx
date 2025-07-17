@@ -11,6 +11,7 @@ import { useNavigate } from "react-router";
 import type { AddEditWorkout } from "../types/workout";
 import type { WorkoutFormPageProps } from "../types/workoutformprops";
 import { toast } from "react-toastify";
+import { BannerImage } from "../components/BannerImage";
 
 export const WorkoutFormPage: FC<WorkoutFormPageProps> = ({workoutId}) => {
   const user = useAtomValue(userAtom)
@@ -109,6 +110,7 @@ export const WorkoutFormPage: FC<WorkoutFormPageProps> = ({workoutId}) => {
 
   return (
   <>
+  <BannerImage />
   {user ? (
     <div className="w-full max-w-lg px-4">
     <form onSubmit={handleSubmit}>

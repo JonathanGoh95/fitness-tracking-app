@@ -1,4 +1,4 @@
-import type { FC } from "react";
+import { useEffect, type FC } from "react";
 import { signIn } from '../services/authService';
 import { useAtom, useSetAtom } from 'jotai';
 import { userAtom } from '../atoms/userAtom';
@@ -6,6 +6,7 @@ import { errorAtom } from '../atoms/errorAtom';
 import { useNavigate } from 'react-router';
 import { loadingAtom } from "../atoms/loadingAtom";
 import { toast } from "react-toastify";
+import { BannerImage } from "../components/BannerImage";
 
 export const SignInPage: FC = () => {
   const navigate = useNavigate()
@@ -33,24 +34,36 @@ export const SignInPage: FC = () => {
       } else {
         setError("Sign In failed. Please try again.");
       }
-    } catch (err) {
-      setError("Server Error: " + err);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+      const serverMsg = err?.response?.data?.error || err?.response?.data?.message;
+      setError(serverMsg ? `Sign In failed: ${serverMsg}` : "Server Error: " + err.message);
     } finally {
       setLoading(false)
     }
   }
 
+  // Removes the error message when navigating back to this page
+  useEffect(() => {
+  return () => {
+    setError(null);
+  };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
-  <div className="flex items-center justify-center py-8">
+  <>
+  <BannerImage />
+  <div className="flex items-center justify-center py-4">
     <form onSubmit={handleSubmit}>
       <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-sm border p-4">
         <legend className="fieldset-legend text-xl italic">Sign In</legend>
         {error && <div className="text-red-500">{error}</div>}
           <label className="text-sm/6 font-medium text-white">Username</label>
-          <input type='text' name='username' required className="input" placeholder="Username"/>
+          <input type='text' name='username' required className="input" placeholder="Username" autoComplete="off"/>
 
           <label className="text-sm/6 font-medium text-white">Password</label>
-          <input type='password' name='password' required className="input" placeholder="Password"/>
+          <input type='password' name='password' required className="input" placeholder="Password" autoComplete="off"/>
 
           <div className="flex justify-self-center gap-4">
             <button type="submit" className="btn btn-neutral mt-4" disabled={loading}>{loading ? "Submitting..." : "Submit"}</button>
@@ -59,5 +72,6 @@ export const SignInPage: FC = () => {
       </fieldset>
     </form>
   </div>
+  </>
   );
 };
