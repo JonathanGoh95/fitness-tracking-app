@@ -5,6 +5,7 @@ import { categoryAtom } from "../atoms/categoryIdAtom";
 import { workoutTypeAtom } from "../atoms/workoutTypeIdAtom";
 import { durationAtom } from "../atoms/durationAtom";
 import { caloriesBurnedAtom } from "../atoms/caloriesBurnedAtom";
+import { workoutDateAtom } from "../atoms/workoutDateAtom";
 import { useEffect, type FC } from "react";
 import { addWorkout, fetchOneWorkout, updateWorkout } from "../services/workoutService";
 import { useNavigate } from "react-router";
@@ -19,14 +20,13 @@ export const WorkoutFormPage: FC<WorkoutFormPageProps> = ({workoutId}) => {
   const [selectedWorkoutType, setSelectedWorkoutType] = useAtom(workoutTypeAtom);
   const [duration, setDuration] = useAtom(durationAtom);
   const [caloriesBurned, setCaloriesBurned] = useAtom(caloriesBurnedAtom); 
+  const [workoutDate, setWorkoutDate] = useAtom(workoutDateAtom)
   const navigate = useNavigate()
   const isEditing= Boolean(workoutId)
 
   // Get user's weight (from user object) and fallback to a default value if not found
   const userWeight = user?.user_weight ?? 70;
-
   const { isLoading, error, data } = useWorkoutMetadata()
-
   // Derive unique categories from metadata
   const categories = data ? Array.from(
     data.reduce((acc, curr) => {
@@ -47,8 +47,8 @@ export const WorkoutFormPage: FC<WorkoutFormPageProps> = ({workoutId}) => {
       const fetchWorkout = async () => {
         const workout = await fetchOneWorkout(user?.token ?? "", workoutId)
         const workoutType = data.find((wt) => wt.id === workout.workout_type_id);
-        setSelectedCategory(workoutType?.category_name ?? "");
-        setSelectedWorkoutType(workoutType?.id? String(workoutType.id) : "");
+        setSelectedCategory(workoutType?.category_name ?? null);
+        setSelectedWorkoutType(workoutType?.id? String(workoutType.id) : null);
         setDuration(workout.duration_mins);
       }
       fetchWorkout()
@@ -82,12 +82,12 @@ export const WorkoutFormPage: FC<WorkoutFormPageProps> = ({workoutId}) => {
       return;
     }
     const formData = new FormData(e.currentTarget);
-    const workoutData:AddEditWorkout = {
+    const workoutData: AddEditWorkout = {
       user_id: user?.id ?? 0,
       workout_type_id: Number(formData.get("workout_type")),
       duration_mins: Number(formData.get("duration")),
       calories_burned: Number(formData.get("calories_burned")),
-      workout_date: new Date(formData.get("workout_date") as string),
+      workout_date: formData.get("workout_date") as string,
     };
     try {
       if (isEditing && workoutId) {
@@ -97,14 +97,14 @@ export const WorkoutFormPage: FC<WorkoutFormPageProps> = ({workoutId}) => {
         await addWorkout(user?.token ?? "", workoutData);
         toast.success("Workout Added! Redirecting to Workouts...");
       }
-      setTimeout(() => navigate("/workouts"), 1500);
+      setTimeout(() => navigate("/workouts"), 500);
     } catch (err) {
       console.error("Failed to add/edit workout:", err);
       toast.error("Failed to add/edit workout: " + (err instanceof Error ? err.message : String(err)));
     }
   };
 
-  if (isLoading) return <span className="loading loading-spinner loading-xl"></span>
+  if (isLoading) return <div className="flex justify-center mt-6"><span className="loading loading-spinner loading-xl"></span></div>
 
   if (error) return 'An error has occurred: ' + error.message
 
@@ -112,10 +112,10 @@ export const WorkoutFormPage: FC<WorkoutFormPageProps> = ({workoutId}) => {
   <>
   <BannerImage />
   {user ? (
-    <div className="w-full max-w-lg px-4">
+    <div className="flex items-center justify-center py-4">
     <form onSubmit={handleSubmit}>
       <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4">
-        <legend className="fieldset-legend">{isEditing ? "Edit Workout" : "Add a New Workout"}</legend>
+        <legend className="fieldset-legend text-xl italic">{isEditing ? "Edit Workout" : "Add a New Workout"}</legend>
           <label className="text-sm/6 font-medium text-white">Category</label>
           <select
             name="category"
@@ -124,7 +124,7 @@ export const WorkoutFormPage: FC<WorkoutFormPageProps> = ({workoutId}) => {
             value={selectedCategory ?? ""}
             onChange={e => {
               setSelectedCategory(e.target.value)
-              setSelectedWorkoutType("")
+              setSelectedWorkoutType(null)
             }}
           >
             <option value="" disabled>Select a workout category</option>
@@ -147,31 +147,31 @@ export const WorkoutFormPage: FC<WorkoutFormPageProps> = ({workoutId}) => {
               <option key={wt.id} value={wt.id}>{wt.workout_name}</option>
             ))}
           </select>
-
-          <label className="text-sm/6 font-medium text-white">Duration (in mins)</label>
-          <input
-            type='number'
-            name='duration'
-            required
-            className="input validator"
-            placeholder="Input Workout Duration (at least 1)"
-            min={1}
-            title="Must be at least 1"
-            value={duration}
-            onChange={e => setDuration(Number(e.target.value))}
-          />
-          <p className="validator-hint">Value must be at least 1</p>
-
+          <div className="relative">
+            <label className="text-sm/6 font-medium text-white">Duration (in mins)</label>
+            <input
+              type='number'
+              name='duration'
+              required
+              className="input validator"
+              placeholder="Input Workout Duration (at least 1)"
+              min={1}
+              title="Must be at least 1"
+              value={duration}
+              onChange={e => setDuration(Number(e.target.value))}
+            />
+            <p className="validator-hint">Value must be at least 1</p>
+          </div>
           <label className="text-sm/6 font-medium text-white">Workout Date</label>
           <input
             type="date"
             name="workout_date"
-            className="input validator"
+            className="input"
             required
-            // Set defaultValue to today:
-            defaultValue={new Date().toISOString().split("T")[0]}
+            value={workoutDate}
             // Unable to select 'future' dates
             max={new Date().toISOString().split("T")[0]}
+            onChange={e => setWorkoutDate(e.target.value)}
           />
 
           <label className="text-sm/6 font-medium text-white">Calories Burned</label>

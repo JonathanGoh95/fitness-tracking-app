@@ -25,7 +25,7 @@ export const SignInPage: FC = () => {
     try{
       const result = await signIn(data);
       if (result && result.payload) {
-        setUser(result.payload);
+        setUser({ ...result.payload, token: result.token });
         toast.success("Sign In Successful. Redirecting to Dashboard...")
         setError(null);
         setTimeout(() => {

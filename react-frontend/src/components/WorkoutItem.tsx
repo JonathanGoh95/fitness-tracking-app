@@ -29,7 +29,7 @@ export const WorkoutItem: FC = () => {
 
   const { isLoading, error, data } = useWorkout(Number(workoutId))
 
-  if (isLoading) return <span className="loading loading-spinner loading-xl"></span>
+  if (isLoading) return <div className="flex justify-center mt-6"><span className="loading loading-spinner loading-xl"></span></div>
 
   if (error) return 'An error has occurred: ' + error.message
   
@@ -50,17 +50,21 @@ export const WorkoutItem: FC = () => {
   return (
   <>
   {user ? (
-  <>
-  <div className="hero bg-base-200 min-h-screen">
+  <div className="flex justify-center">
+  <div className="hero bg-base-200 w-1/4 rounded-xl mt-6">
     <div className="hero-content text-center">
       <div className="max-w-md">
-        <h1 className="text-5xl font-bold">Workout Details</h1>
-        <p className="py-6">{data?.workout_type}</p>
-        <p className="py-6">{data?.category}</p>
-        <p className="py-6">{data?.duration_mins}</p>
-        <p className="py-6">{data?.calories_burned}</p>
-        <p className="py-6">{data?.workout_date ? new Date(data.workout_date).toLocaleDateString() : ""}</p>
-        <div className="flex gap-4">
+        <h1 className="text-5xl font-bold py-4">Workout Details</h1>
+        <div className="flex gap-2 py-4 justify-center"><p className="font-bold text-xl">Workout Type:</p><p className="text-xl">{data?.workout_type}</p></div>
+        <div className="flex gap-2 py-4 justify-center"><p className="font-bold text-xl">Category:</p><p className="text-xl">{data?.category}</p></div>
+        <div className="flex gap-2 py-4 justify-center"><p className="font-bold text-xl">Duration:</p><p className="text-xl">{data?.duration_mins !== undefined
+        ? data.duration_mins >= 60
+        ? `${Math.floor(data.duration_mins / 60)} hr${Math.floor(data.duration_mins / 60) > 1 ? "s" : ""} ${data.duration_mins % 60} min${Math.floor(data.duration_mins % 60) > 1 ? "s" : ""}`
+        : `${data.duration_mins} mins`
+      : ""}</p></div>
+        <div className="flex gap-2 py-4 justify-center"><p className="font-bold text-xl">Calories Burned:</p><p className="text-xl">{data?.calories_burned}</p></div>
+        <div className="flex gap-2 py-4 justify-center"><p className="font-bold text-xl">Date of Workout:</p><p className="text-xl">{data?.workout_date ? new Date(data.workout_date).toLocaleDateString() : ""}</p></div>
+        <div className="flex justify-center gap-4">
           <button
             className="btn btn-warning mt-4"
             onClick={() => data?.id !== undefined && handleEdit(data.id)}
@@ -75,7 +79,7 @@ export const WorkoutItem: FC = () => {
           >
             Delete
           </button>
-          <button className="btn btn-neutral mt-4" onClick={() => navigate("/workouts")}>Back</button>
+          <button className="btn btn-soft mt-4" onClick={() => navigate("/workouts")}>Back</button>
         </div>
       </div>
     </div>
@@ -90,7 +94,7 @@ export const WorkoutItem: FC = () => {
         <button className="btn btn-neutral" type="button" onClick={closeDeleteModal}>Close</button>
       </form>
     </dialog>
-  </>
+  </div>
   ) : (
     <h1>Sign Up/Sign In to view your workouts!</h1>
   )}

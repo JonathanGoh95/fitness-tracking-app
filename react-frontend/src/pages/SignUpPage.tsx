@@ -34,7 +34,7 @@ export const SignUpPage: FC = () => {
     try{
       const result = await signUp(data);
       if (result && result.payload) {
-        setUser(result.payload);
+        setUser({ ...result.payload, token: result.token });
         toast.success("Account Successfully Created. Redirecting to Dashboard...")
         setError(null);
         setTimeout(() => {

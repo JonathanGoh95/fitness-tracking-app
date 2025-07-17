@@ -19,7 +19,7 @@ export const EditUserPage: FC = () => {
 
     const { isLoading, error, data } = useUser()
     
-    if (isLoading) return <span className="loading loading-spinner loading-xl"></span>
+    if (isLoading) return <div className="flex justify-center mt-6"><span className="loading loading-spinner loading-xl"></span></div>
 
     if (error) return 'An error has occurred: ' + error.message
 

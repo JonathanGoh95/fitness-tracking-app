@@ -22,10 +22,10 @@ const getWorkouts = async (token: string): Promise<Workout[]> => {
 
 const addWorkout = async (token: string, data: AddEditWorkout) => {
   try {
-    const response = await axios.post(`${BASE_URL}/workouts/new`, {
+    const response = await axios.post(`${BASE_URL}/workouts/new`, data, {
     headers: {
       Authorization: `Bearer ${token}`,
-    }, data});
+    }});
     // Axios will throw error if status is not of 2XX, so additional checks are not needed 
     // if (response.statusText !== "OK") {
     //   throw new Error(`Response status: ${response.status}`);
@@ -39,7 +39,7 @@ const addWorkout = async (token: string, data: AddEditWorkout) => {
 
 const fetchOneWorkout = async (token: string, workoutId: number): Promise<FetchWorkout> => {
   try {
-    const response = await axios.get(`${BASE_URL}/${workoutId}/edit`, {
+    const response = await axios.get(`${BASE_URL}/workouts/${workoutId}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     }});
@@ -56,7 +56,7 @@ const fetchOneWorkout = async (token: string, workoutId: number): Promise<FetchW
 
 const updateWorkout = async (token: string, workoutId: number, data: AddEditWorkout)=> {
   try {
-    const response = await axios.put(`${BASE_URL}/${workoutId}/edit`, data, {
+    const response = await axios.put(`${BASE_URL}/workouts/${workoutId}/edit`, data, {
     headers: {
       Authorization: `Bearer ${token}`,
     }}

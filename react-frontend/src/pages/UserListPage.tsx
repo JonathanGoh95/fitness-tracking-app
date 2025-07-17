@@ -28,7 +28,7 @@ export const UserListPage: FC = () => {
 
     const { isLoading, error, data } = useUsers(user?.token)
 
-    if (isLoading) return <span className="loading loading-spinner loading-xl"></span>
+    if (isLoading) return <div className="flex justify-center mt-6"><span className="loading loading-spinner loading-xl"></span></div>
 
     if (error) return 'An error has occurred: ' + error.message
 

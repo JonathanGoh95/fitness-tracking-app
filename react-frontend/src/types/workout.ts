@@ -1,6 +1,6 @@
 export interface Workout {
   id: number;
-  workout_type_id: number;
+  workout_type: string;
   duration_mins: number;
   calories_burned: number;
   workout_date: Date;
@@ -23,5 +23,5 @@ export interface AddEditWorkout {
   workout_type_id: number;
   duration_mins: number;
   calories_burned: number;
-  workout_date: Date;
+  workout_date: string;
 }

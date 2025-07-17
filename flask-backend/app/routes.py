@@ -42,7 +42,7 @@ def sign_up():
                 return jsonify({'error': 'Username or Email Address already exists'}), 409
             
             cur.execute(
-                "INSERT INTO users (username, email, password_hash, user_weight, user_role) VALUES (%s, %s, %s, %s, %s) RETURNING id, username, user_weight, user_role",
+                "INSERT INTO users (username, email, password_hash, user_weight, user_role) VALUES (%s, %s, %s, %s, %s) RETURNING id, username, email, user_weight, user_role",
                 (username, email, hashed_password, user_weight, user_role)
             )
             user = cur.fetchone()
@@ -51,8 +51,9 @@ def sign_up():
         user_info = {
             "id": user[0],
             "username": user[1],
-            "user_weight": float(user[2]),
-            "user_role": user[3]
+            "email": user[2],
+            "user_weight": float(user[3]),
+            "user_role": user[4]
         }
         token = jwt.encode(user_info, os.getenv('JWT_SECRET'), algorithm="HS256")
         # Returns a message with the token
@@ -117,14 +118,14 @@ def sign_in():
     db = get_db()
     try:
         with db.cursor() as cur:
-            cur.execute("SELECT id, username, password_hash, user_weight, user_role FROM users WHERE username = %s", (username,))
+            cur.execute("SELECT id, username, email, password_hash, user_weight, user_role FROM users WHERE username = %s", (username,))
             user = cur.fetchone()
             if not user:
                 return jsonify({"error": "Invalid Credentials."}), 401
             
             password_is_valid = bcrypt.checkpw(
                 bytes(password, 'utf-8'),
-                user[2].encode('utf-8')
+                user[3].encode('utf-8')
             )
             if not password_is_valid:
                 return jsonify({"error": "Invalid Credentials."}), 401
@@ -133,8 +134,9 @@ def sign_in():
         user_info = {
             "id": user[0],
             "username": user[1],
-            "user_weight": float(user[3]),
-            "user_role": user[4]
+            "email": user[2],
+            "user_weight": float(user[4]),
+            "user_role": user[5]
         }
         token = jwt.encode(user_info, os.getenv('JWT_SECRET'), algorithm="HS256")
         return jsonify({'message': 'Sign In Successful', 'token': token}), 200
@@ -210,7 +212,7 @@ def get_workout_metadata(current_user):
         {
             'id': meta[0],
             'workout_name': meta[1],
-            'met_value': meta[2],
+            'met_value': float(meta[2]),
             'category_name': meta[3],
         }
         for meta in data
@@ -245,7 +247,7 @@ def add_workout(current_user):
         return jsonify({"error": str(err)}), 500
     
 # Fetch One Workout
-@workout_blueprint.route('/<int:workoutId>/edit', methods=['GET'])
+@workout_blueprint.route('/<int:workoutId>/', methods=['GET'])
 @token_required
 def get_workout(current_user, workoutId):
     db = get_db()
