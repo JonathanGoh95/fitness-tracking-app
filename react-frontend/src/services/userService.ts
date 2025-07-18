@@ -25,7 +25,7 @@ const fetchUser = async (token: string, userId: number): Promise<User> => {
     const response = await axios.get(`${BASE_URL}/users/${userId}`, {
     headers: {
       Authorization: `Bearer ${token}`,
-    },});
+    }});
     // Axios will throw error if status is not of 2XX, so additional checks are not needed 
     // if (response.statusText !== "OK") {
     //   throw new Error(`Response status: ${response.status}`);
@@ -37,20 +37,28 @@ const fetchUser = async (token: string, userId: number): Promise<User> => {
   }
 };
 
-const updateUser = async (token: string, userId: number, userData: UpdateUser) => {
+const updateUser = async (token_old: string, userId: number, userData: UpdateUser) => {
   try {
     const response = await axios.put(`${BASE_URL}/users/${userId}/edit`, userData, {
     headers: {
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${token_old}`,
     }}
-  );
+    );
     // Axios will throw error if status is not of 2XX, so additional checks are not needed 
     // if (response.statusText !== "OK") {
     //   throw new Error(`Response status: ${response.status}`);
     // }
-    return response.data;
+    console.log(response)
+    const token:string = response.data.token
+    if (!token) {
+      throw new Error("No token returned from backend.");
+    }
+    const payload: User = JSON.parse(atob(token.split(".")[1]));
+    if (token){
+      return {payload, token}
+    }
   } catch (error) {
-    console.error("Error fetching user data: ", error);
+    console.error("Error updating user: ", error);
     throw error;
   }
 };

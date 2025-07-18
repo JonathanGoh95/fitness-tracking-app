@@ -1,4 +1,4 @@
-import { useEffect, type FC } from "react";
+import { useEffect, useRef, type FC } from "react";
 import { signUp } from '../services/authService';
 import { adminSignUp } from '../services/authService';
 import { useAtom } from 'jotai';
@@ -8,12 +8,15 @@ import { useNavigate } from 'react-router';
 import { loadingAtom } from "../atoms/loadingAtom";
 import { toast } from "react-toastify";
 import { BannerImage } from "../components/BannerImage";
+import { formValidityAtom } from "../atoms/formValidityAtom";
 
 export const SignUpPage: FC = () => {
   const navigate = useNavigate()
   const [user,setUser] = useAtom(userAtom);
   const [loading, setLoading] = useAtom(loadingAtom)
   const [error,setError] = useAtom(errorAtom)
+  const formRef = useRef<HTMLFormElement>(null);
+  const [isFormValid, setIsFormValid] = useAtom(formValidityAtom)
   
   const handleUserSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -94,78 +97,87 @@ export const SignUpPage: FC = () => {
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    const handleInput = () => {
+        if (formRef.current) {
+            setIsFormValid(formRef.current.checkValidity());
+        }
+    };
+
   return (
   <>
   <BannerImage />
   {user && user.user_role === 'admin' ? (
     <div className="flex items-center justify-center py-4">
-    <form onSubmit={handleAdminSubmit}>
+    <form ref={formRef} onSubmit={handleAdminSubmit} onInput={handleInput}>
       <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-sm border p-4">
         <legend className="fieldset-legend text-xl italic">Create Admin Account</legend>
         {error && <div className="text-red-500">{error}</div>}
           <label className="text-sm/6 font-medium text-white">Username</label>
           <div className="relative">
-          <input type='text' name='username' className="input validator" required placeholder="Username" pattern="[A-Za-z][A-Za-z0-9\-]*" minLength={3} maxLength={30} title="Only letters, numbers or dash"/>
-          <span className="validator-hint">Must be 3 to 30 characters<br/>containing only letters, numbers or dash</span>
+            <input type='text' name='username' className="input validator mb-1" required placeholder="Username" pattern="[A-Za-z][A-Za-z0-9\-]*" minLength={3} maxLength={30} title="Only letters, numbers or dash"/>
+            <span className="validator-hint">Must be within 3 to 30 characters<br/>containing only letters, numbers or dash</span>
           </div>
-          <div className="relative">
           <label className="text-sm/6 font-medium text-white">Email</label>
-          <input type='email' name='email' className="input validator" required placeholder="Email"/>
-          <p className="validator-hint text-red-500">Enter valid email address</p>
-          </div>
           <div className="relative">
+            <input type='email' name='email' className="input validator mb-1" required placeholder="Email"/>
+            <span className="validator-hint">Enter valid email address</span>
+          </div>
           <label className="text-sm/6 font-medium text-white">Password</label>
-          <input type='password' name='password' className="input validator" required placeholder="Password" title="Must be more than 8 characters" pattern="[A-Za-z0-9]{8,}" minLength={8}/>
-          <p className="validator-hint text-red-500">Must be more than 8 characters</p>
+          <div className="relative">
+            <input type='password' name='password' className="input validator mb-1" required placeholder="Password" title="Must be more than 8 characters" pattern="[A-Za-z0-9]{8,}" minLength={8}/>
+            <span className="validator-hint">Must be more than 8 characters</span>
           </div>
           <label className="text-sm/6 font-medium text-white">Confirm Password</label>
-          <input type='password' name='passwordConfirm' className="input" required placeholder="Confirm Password" minLength={8}/>
           <div className="relative">
-            <label className="text-sm/6 font-medium text-white">Body Weight (in KG, for Calculation of Calories Burned)</label>
-            <input type='number' name='weight' className="input validator" step={0.01} min={0} required placeholder="Weight in KG"/>
-            <p className="validator-hint text-red-500">Weight must be greater than 0</p>
+            <input type='password' name='passwordConfirm' className="input validator mb-1" required placeholder="Confirm Password" pattern="[A-Za-z0-9]{8,}" minLength={8}/>
+            <span className="validator-hint">Must be more than 8 characters</span>
+          </div>
+          <label className="text-sm/6 font-medium text-white">Body Weight (in KG, for Calculation of Calories Burned)</label>
+          <div className="relative">
+            <input type='number' name='weight' className="input validator mb-1" step={0.01} min={0.01} required placeholder="Weight in KG"/>
+            <span className="validator-hint">Weight must be greater than 0</span>
           </div>
           <div className="flex gap-4">
-            <button type="submit" className="btn btn-neutral mt-4" disabled={loading}>{loading ? "Submitting..." : "Submit"}</button>
-            <button type="button" className="btn btn-neutral mt-4" onClick={() => navigate("/")}>Back</button>
+            <button type="submit" className="btn btn-success mt-4" disabled={loading || !isFormValid}>{loading ? "Creating Admin..." : "Create Admin"}</button>
+            <button type="button" className="btn btn-soft mt-4" onClick={() => navigate("/")}>Back</button>
           </div>
       </fieldset>
     </form>
   </div>
   ) : !user ? (
     <div className="flex items-center justify-center py-4">
-    <form onSubmit={handleUserSubmit}>
+    <form ref={formRef} onSubmit={handleUserSubmit} onInput={handleInput}>
       <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-sm border p-4">
         <legend className="fieldset-legend text-xl italic">Sign Up as a New User</legend>
         {error && <div className="text-red-500">{error}</div>}
+          <label className="text-sm/6 font-medium text-white mb-1">Username</label>
           <div className="relative">
-            <label className="text-sm/6 font-medium text-white">Username</label>
-            <input type='text' name='username' className="input validator" required placeholder="Username" pattern="[A-Za-z][A-Za-z0-9\-]*" minLength={3} maxLength={30} title="Only letters, numbers or dash"/>
-            <span className="validator-hint">Must be 3 to 30 characters<br/>containing only letters, numbers or dash</span>
+            <input type='text' name='username' className="input validator mb-1" required placeholder="Username" pattern="[A-Za-z][A-Za-z0-9\-]*" minLength={3} maxLength={30} title="Only letters, numbers or dash"/>
+            <span className="validator-hint">Must be within 3 to 30 characters<br/>containing only letters, numbers or dash</span>
           </div>
+          <label className="text-sm/6 font-medium text-white mb-1">Email</label>
           <div className="relative">
-            <label className="text-sm/6 font-medium text-white">Email</label>
-            <input type='email' name='email' className="input validator" required placeholder="Email"/>
+            <input type='email' name='email' className="input validator mb-1" required placeholder="Email"/>
             <span className="validator-hint">Enter valid email address</span>
           </div>
+          <label className="text-sm/6 font-medium text-white mb-1">Password</label>
           <div className="relative">
-            <label className="text-sm/6 font-medium text-white">Password</label>
-            <input type='password' name='password' className="input validator" required placeholder="Password" title="Must be more than 8 characters" pattern="[A-Za-z0-9]{8,}" minLength={8}/>
+            <input type='password' name='password' className="input validator mb-1" required placeholder="Password" title="Must be more than 8 characters" pattern="[A-Za-z0-9]{8,}" minLength={8}/>
             <span className="validator-hint">Must be more than 8 characters</span>
           </div>
+          <label className="text-sm/6 font-medium text-white mb-1">Confirm Password</label>
           <div className="relative">
-            <label className="text-sm/6 font-medium text-white">Confirm Password</label>
-            <input type='password' name='passwordConfirm' className="input validator" required placeholder="Confirm Password" pattern="[A-Za-z0-9]{8,}" minLength={8}/>
+            <input type='password' name='passwordConfirm' className="input validator mb-1" required placeholder="Confirm Password" pattern="[A-Za-z0-9]{8,}" minLength={8}/>
             <span className="validator-hint">Must be more than 8 characters</span>
           </div>
+          <label className="text-sm/6 font-medium text-white mb-1">Body Weight (in KG, for Calculation of Calories Burned)</label>
           <div className="relative">
-            <label className="text-sm/6 font-medium text-white">Body Weight (in KG, for Calculation of Calories Burned)</label>
-            <input type='number' name='weight' className="input validator" step={0.01} min={0.01} required placeholder="Weight in KG"/>
+            <input type='number' name='weight' className="input validator mb-1" step={0.01} min={0.01} required placeholder="Weight in KG"/>
             <span className="validator-hint">Weight must be greater than 0</span>
           </div>
           <div className="flex justify-self-center gap-4">
-            <button type="submit" className="btn btn-neutral mt-4" disabled={loading}>{loading ? "Submitting..." : "Submit"}</button>
-            <button type="button" className="btn btn-neutral mt-4" onClick={() => navigate("/")}>Back</button>
+            <button type="submit" className="btn btn-success mt-4" disabled={loading || !isFormValid}>{loading ? "Signing Up..." : "Sign Up"}</button>
+            <button type="button" className="btn btn-soft mt-4" onClick={() => navigate("/")}>Back</button>
           </div>
       </fieldset>
     </form>

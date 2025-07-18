@@ -339,7 +339,7 @@ def get_users(current_user):
 @user_blueprint.route('/<int:userId>', methods=['GET'])
 @token_required
 def get_user(current_user, userId):
-    if current_user.get('user_role') != 'admin':
+    if current_user.get('user_role') != 'admin' and current_user.get('id') != userId:
         return jsonify({"error": "Not authorized to view user account"}), 403
     db = get_db()
     try:
@@ -375,12 +375,21 @@ def update_user(current_user, userId):
     try:
         with db.cursor() as cur:
             cur.execute(
-            "UPDATE users SET username = %s, email = %s, user_weight = %s WHERE id = %s", (username, email, user_weight, userId)
+            "UPDATE users SET username = %s, email = %s, user_weight = %s WHERE id = %s RETURNING id, username, email, user_weight, user_role", (username, email, user_weight, userId)
             )
             if cur.rowcount == 0:
                 return jsonify({"error": "User not updated/authorized"}), 404
+            updated_user = cur.fetchone()
         db.commit()
-        return jsonify({'message': 'User Updated Successfully!'}), 200
+        updated_user_info = {
+            "id": updated_user[0],
+            "username": updated_user[1],
+            "email": updated_user[2],
+            "user_weight": float(updated_user[3]),
+            "user_role": updated_user[4]
+        }
+        updated_token = jwt.encode(updated_user_info, os.getenv('JWT_SECRET'), algorithm="HS256")
+        return jsonify({'message': 'User Updated Successfully!', 'token': updated_token}), 200
     except Exception as err:
         return jsonify({"error": str(err)}), 500
     

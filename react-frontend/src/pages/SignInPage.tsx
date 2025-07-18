@@ -64,8 +64,8 @@ export const SignInPage: FC = () => {
           <input type='password' name='password' required className="input" placeholder="Password" autoComplete="off"/>
 
           <div className="flex justify-self-center gap-4">
-            <button type="submit" className="btn btn-neutral mt-4" disabled={loading}>{loading ? "Submitting..." : "Submit"}</button>
-            <button type="button" className="btn btn-neutral mt-4" onClick={() => navigate("/")}>Back</button>
+            <button type="submit" className="btn btn-success mt-4" disabled={loading}>{loading ? "Signing In..." : "Sign In"}</button>
+            <button type="button" className="btn btn-soft mt-4" onClick={() => navigate("/")}>Back</button>
           </div>
       </fieldset>
     </form>
