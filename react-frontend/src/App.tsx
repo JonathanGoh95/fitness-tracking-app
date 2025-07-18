@@ -18,7 +18,7 @@ export const App = () => {
       <NavBar />
       <Routes>
         <Route path="/" element={<Dashboard />} />
-        <Route path="/sign-up" element={<SignUpPage />}/>
+        <Route path="/sign-up" element={<SignUpPage />} />
         <Route path="/sign-in" element={<SignInPage />} />
         <Route path="/workouts" element={<WorkoutListPage />} />
         <Route path="/workouts/:workoutId" element={<WorkoutItem />} />
@@ -29,16 +29,16 @@ export const App = () => {
       </Routes>
       {/* Toastify Container for Visual Customization and Appearance in Browser */}
       <ToastContainer
-          position="top-right"
-          autoClose={1500}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="dark"
+        position="top-right"
+        autoClose={1500}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
       />
     </>
   );

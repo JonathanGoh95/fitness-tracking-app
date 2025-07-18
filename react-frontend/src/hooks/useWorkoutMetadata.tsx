@@ -6,15 +6,15 @@ import type { WorkoutMetadata } from "../types/metadata";
 
 // Fetch all workouts
 export const useWorkoutMetadata = () => {
-  const user = useAtomValue(userAtom)
+  const user = useAtomValue(userAtom);
 
   return useQuery<WorkoutMetadata>({
     queryKey: ["metadata"],
     queryFn: () => {
       if (!user?.token) throw new Error("User not authenticated");
-      return getWorkoutMetadata(user.token)
+      return getWorkoutMetadata(user.token);
     },
     enabled: !!user?.token,
-    staleTime: 5000
+    staleTime: 5000,
   });
 };

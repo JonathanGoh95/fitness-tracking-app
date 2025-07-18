@@ -1,9 +1,13 @@
-import coverImage from "../../images/cover_image.jpg"
+import coverImage from "../../images/cover_image.jpg";
 
 export const BannerImage = () => {
-    return (
-        <div className="flex justify-center w-full h-40 overflow-hidden mb-4">
-            <img className="w-full h-full object-cover rounded-md" src={coverImage} alt="Dashboard Banner"/>
-        </div>
-    )
-}
+  return (
+    <div className="mb-4 flex h-40 w-full justify-center overflow-hidden">
+      <img
+        className="h-full w-full rounded-md object-cover"
+        src={coverImage}
+        alt="Dashboard Banner"
+      />
+    </div>
+  );
+};

@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 
 export const EditWorkoutPage = () => {
   const { workoutId } = useParams();
-  const workoutIdNumber = workoutId !== undefined ? Number(workoutId) : undefined;
+  const workoutIdNumber =
+    workoutId !== undefined ? Number(workoutId) : undefined;
   return <WorkoutFormPage workoutId={workoutIdNumber} />;
 };

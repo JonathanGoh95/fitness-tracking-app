@@ -6,15 +6,15 @@ import type { FetchWorkout } from "../types/workout";
 
 // Fetch all workouts
 export const useWorkout = (workoutId: number) => {
-  const user = useAtomValue(userAtom)
+  const user = useAtomValue(userAtom);
 
   return useQuery<FetchWorkout>({
     queryKey: ["workout", workoutId],
     queryFn: () => {
       if (!user?.token) throw new Error("User not authenticated");
-      return fetchOneWorkout(user.token, workoutId)
+      return fetchOneWorkout(user.token, workoutId);
     },
     enabled: !!user?.token,
-    staleTime: 5000
+    staleTime: 5000,
   });
 };
