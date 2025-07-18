@@ -10,6 +10,7 @@ import { errorAtom } from "../atoms/errorAtom";
 import { formValidityAtom } from "../atoms/formValidityAtom";
 import { updateUser } from "../services/userService";
 import { toast } from "react-toastify";
+import { BannerImage } from "../components/BannerImage";
 
 export const EditUserPage = () => {
   const { userId } = useParams();
@@ -20,7 +21,7 @@ export const EditUserPage = () => {
   const formRef = useRef<HTMLFormElement>(null);
   const [isFormValid, setIsFormValid] = useAtom(formValidityAtom);
 
-  const { isLoading, error, data } = useUser();
+  const { isLoading, error, data } = useUser(Number(userId));
 
   // Removes the error message when navigating back to this page
   useEffect(() => {
@@ -52,15 +53,26 @@ export const EditUserPage = () => {
         Number(userId),
         userData
       );
-      if (result && result.payload) {
-        setUser({ ...result.payload, token: result.token });
-        toast.success(
-          `User Updated! Redirecting to ${user?.user_role === "admin" ? "Users" : "Dashboard"}...`
-        );
+
+      if (result && (result.payload || result.success)) {
         setErrorMsg(null);
-        setTimeout(() => {
-          navigate(user?.user_role === "admin" ? "/users" : "/");
-        }, 500);
+
+        if (user?.id === Number(userId)) {
+          // User editing their own profile
+          if (result.payload && result.token) {
+            setUser({ ...result.payload, token: result.token });
+          }
+          toast.success("User Profile Updated! Redirecting to Dashboard...");
+          setTimeout(() => {
+            navigate("/");
+          }, 250);
+        } else if (user?.user_role === 'admin'){
+          // Admin editing another user - don't update the user atom state
+          toast.success("User Profile Updated! Redirecting to Users...");
+          setTimeout(() => {
+            navigate("/users");
+          }, 250);
+          }
       }
     } catch (err) {
       setErrorMsg("Server Error: " + err);
@@ -77,6 +89,7 @@ export const EditUserPage = () => {
 
   return (
     <>
+    <BannerImage/>
       {user?.id !== Number(userId) && user?.user_role !== "admin" && (
         <div className="my-6 flex justify-center text-3xl italic">
           <h1>
@@ -110,7 +123,7 @@ export const EditUserPage = () => {
                   title="Only letters, numbers or dash"
                 />
                 <p className="validator-hint">
-                  Must be 3 to 30 characters
+                  Must be within 3 to 30 characters
                   <br />
                   containing only letters, numbers or dash
                 </p>

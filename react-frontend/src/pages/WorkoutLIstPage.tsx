@@ -80,7 +80,7 @@ export const WorkoutListPage = () => {
             <div className="overflow-x-auto">
               <table className="border-base-300 table w-full border">
                 {/* head */}
-                <thead>
+                <thead className="bg-base-200">
                   <tr className="text-center">
                     <th>Workout ID</th>
                     <th>Workout Duration</th>
@@ -142,13 +142,20 @@ export const WorkoutListPage = () => {
                     : `${totalDuration} mins`}
                 </p>
               </div>
-              <div className="mt-2 flex justify-center">
+              <div className="mt-2 flex justify-center gap-4">
                 <button
                   className="btn btn-soft"
                   type="button"
                   onClick={() => navigate("/workouts/new")}
                 >
                   Create New Workout
+                </button>
+                <button
+                  className="btn btn-soft"
+                  type="button"
+                  onClick={() => navigate("/")}
+                >
+                  Back
                 </button>
               </div>
             </div>

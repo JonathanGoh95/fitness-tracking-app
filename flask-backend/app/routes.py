@@ -327,7 +327,7 @@ def get_users(current_user):
             'username': u[1],
             'email': u[2],
             'user_weight': float(u[3]),
-            'role': u[4],
+            'user_role': u[4],
         }
         for u in users
     ]
@@ -374,6 +374,17 @@ def update_user(current_user, userId):
     db = get_db()
     try:
         with db.cursor() as cur:
+            # Check if username already exists for a different user
+            cur.execute("SELECT id FROM users WHERE username = %s AND id != %s", (username, userId))
+            if cur.fetchone():
+                return jsonify({'error': 'Username already exists'}), 409
+            
+            # Check if email already exists for a different user
+            cur.execute("SELECT id FROM users WHERE email = %s AND id != %s", (email, userId))
+            if cur.fetchone():
+                return jsonify({'error': 'Email already exists'}), 409
+            
+            # Proceed with update
             cur.execute(
             "UPDATE users SET username = %s, email = %s, user_weight = %s WHERE id = %s RETURNING id, username, email, user_weight, user_role", (username, email, user_weight, userId)
             )
@@ -381,15 +392,20 @@ def update_user(current_user, userId):
                 return jsonify({"error": "User not updated/authorized"}), 404
             updated_user = cur.fetchone()
         db.commit()
-        updated_user_info = {
-            "id": updated_user[0],
-            "username": updated_user[1],
-            "email": updated_user[2],
-            "user_weight": float(updated_user[3]),
-            "user_role": updated_user[4]
-        }
-        updated_token = jwt.encode(updated_user_info, os.getenv('JWT_SECRET'), algorithm="HS256")
-        return jsonify({'message': 'User Updated Successfully!', 'token': updated_token}), 200
+        # If user is editing their own profile, return an updated token
+        if current_user.get('id') == userId and current_user.get('user_role') != 'admin':
+            updated_user_info = {
+                "id": updated_user[0],
+                "username": updated_user[1],
+                "email": updated_user[2],
+                "user_weight": float(updated_user[3]),
+                "user_role": updated_user[4]
+            }
+            updated_token = jwt.encode(updated_user_info, os.getenv('JWT_SECRET'), algorithm="HS256")
+            return jsonify({'message': 'User Updated Successfully!', 'token': updated_token}), 200
+        elif current_user.get('user_role') == 'admin':
+            # Admin editing another user - no token returned
+            return jsonify({'message': 'User Updated Successfully!'}), 200
     except Exception as err:
         return jsonify({"error": str(err)}), 500
     

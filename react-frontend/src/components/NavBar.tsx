@@ -44,6 +44,9 @@ export const NavBar = () => {
                 <Link to="/users">View User Accounts</Link>
               </li>
               <li>
+                <Link to={`/users/${user.id}/edit`}>Edit Profile</Link>
+              </li>
+              <li>
                 <button onClick={handleLogout}>Logout</button>
               </li>
             </>

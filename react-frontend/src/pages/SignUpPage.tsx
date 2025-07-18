@@ -44,7 +44,7 @@ export const SignUpPage = () => {
         setError(null);
         setTimeout(() => {
           navigate(`/`);
-        }, 500);
+        }, 250);
       } else {
         setError("Sign Up Failed. Please try again.");
       }
@@ -87,7 +87,7 @@ export const SignUpPage = () => {
         setError(null);
         setTimeout(() => {
           navigate(`/`);
-        }, 1500);
+        }, 250);
       } else {
         setError("Admin Account Creation Failed. Please try again.");
       }
@@ -218,7 +218,7 @@ export const SignUpPage = () => {
                   Weight must be greater than 0
                 </span>
               </div>
-              <div className="flex gap-4">
+              <div className="flex gap-4 justify-self-center">
                 <button
                   type="submit"
                   className="btn btn-success mt-4"

@@ -126,7 +126,7 @@ export const WorkoutFormPage: FC<WorkoutFormPageProps> = ({ workoutId }) => {
         await addWorkout(user?.token ?? "", workoutData);
         toast.success("Workout Added! Redirecting to Workouts...");
       }
-      setTimeout(() => navigate("/workouts"), 500);
+      setTimeout(() => navigate("/workouts"), 250);
     } catch (err) {
       console.error("Failed to add/edit workout:", err);
       toast.error(

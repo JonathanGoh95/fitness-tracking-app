@@ -26,7 +26,7 @@ export const UserListPage = () => {
   });
 
   const { isLoading, error, data } = useUsers(user?.token);
-
+  console.log(data)
   if (isLoading)
     return (
       <div className="mt-6 flex justify-center">
@@ -40,7 +40,7 @@ export const UserListPage = () => {
   const closeDeleteModal = () => setDeleteId(null);
 
   const handleEdit = (userId: number) => {
-    navigate(`users/${userId}/edit`);
+    navigate(`${userId}/edit`);
   };
 
   const handleDelete = () => {
@@ -53,18 +53,18 @@ export const UserListPage = () => {
   return (
     <>
       {user && user.user_role === "admin" ? (
-        <div className="mx-auto max-w-4xl p-6">
+        <div className="mx-auto max-w-6xl p-6">
           <div className="mb-6 flex flex-col items-center justify-self-center italic">
-            <h1 className="mb-2 text-3xl font-bold">
+            <h1 className="mb-4 text-3xl font-bold">
               Welcome, Admin {user.username}
             </h1>
-            <p className="text-lg text-gray-400">Manage user accounts below:</p>
+            <p className="text-xl text-gray-400">Manage user accounts below:</p>
           </div>
           {data?.length !== 0 ? (
-            <div className="overflow-x-auto rounded-lg shadow">
+            <div className="overflow-x-auto">
               <table className="border-base-300 table w-full border">
                 <thead className="bg-base-200">
-                  <tr>
+                  <tr className="text-center">
                     <th>User ID</th>
                     <th>Username</th>
                     <th>Email Address</th>
@@ -75,14 +75,14 @@ export const UserListPage = () => {
                 </thead>
                 <tbody>
                   {data?.map((u) => (
-                    <tr key={u.id} className="hover:bg-base-100">
+                    <tr key={u.id} className="text-center hover:bg-base-100">
                       <td>{u.id}</td>
                       <td>{u.username}</td>
                       <td>{u.email}</td>
                       <td>{u.user_weight}</td>
                       <td>{u.user_role}</td>
                       <td>
-                        <div className="flex gap-2">
+                        <div className="flex justify-center gap-2">
                           <button
                             className="btn btn-warning btn-sm"
                             onClick={() => handleEdit(u.id)}
@@ -101,11 +101,25 @@ export const UserListPage = () => {
                   ))}
                 </tbody>
               </table>
+              <div className="mt-2 flex justify-center gap-4">
+                  <button
+                  className="btn btn-soft"
+                  type="button"
+                  onClick={() => navigate("/")}
+                >
+                  Back
+                </button>
+              </div>
             </div>
           ) : (
             <h2 className="mt-8 text-center text-xl">No Users Found.</h2>
           )}
-          <dialog className="modal" open={deleteId !== null}>
+          <dialog className="modal" open={deleteId !== null} onClick={(e) => {
+              // Only close if the user clicks the backdrop, not the modal content
+              if (e.target === e.currentTarget) {
+                closeDeleteModal();
+              }
+            }}>
             <div className="modal-box">
               <h3 className="text-lg font-bold">Confirm User Deletion</h3>
               <p className="py-4">

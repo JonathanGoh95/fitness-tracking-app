@@ -30,7 +30,7 @@ export const SignInPage = () => {
         setError(null);
         setTimeout(() => {
           navigate(`/`);
-        }, 500);
+        }, 250);
       } else {
         setError("Sign In failed. Please try again.");
       }

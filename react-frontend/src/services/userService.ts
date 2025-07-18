@@ -58,14 +58,14 @@ const updateUser = async (
     // if (response.statusText !== "OK") {
     //   throw new Error(`Response status: ${response.status}`);
     // }
-    console.log(response);
     const token: string = response.data.token;
-    if (!token) {
-      throw new Error("No token returned from backend.");
-    }
-    const payload: User = JSON.parse(atob(token.split(".")[1]));
     if (token) {
+      // User editing own profile - return payload and token
+      const payload: User = JSON.parse(atob(token.split(".")[1]));
       return { payload, token };
+    } else{
+      // Admin editing another user - return success without token
+      return { success: true, message: response.data.message };
     }
   } catch (error) {
     console.error("Error updating user: ", error);
