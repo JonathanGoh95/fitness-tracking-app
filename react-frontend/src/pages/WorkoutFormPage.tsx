@@ -71,6 +71,13 @@ export const WorkoutFormPage: FC<WorkoutFormPageProps> = ({workoutId}) => {
     }
   }, [selectedWorkoutType, selectedCategory, duration, data, userWeight, setCaloriesBurned]);
 
+  // Resets the form when navigating back to this page
+  useEffect(() => {
+    setSelectedCategory(null)
+    setSelectedWorkoutType(null)
+    setDuration(0);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -185,8 +192,8 @@ export const WorkoutFormPage: FC<WorkoutFormPageProps> = ({workoutId}) => {
               // Not selectable via keyboard
               tabIndex={-1}
           />
-
-          <button className="btn btn-neutral mt-4">{isEditing? "Edit" : "Add"} Workout</button>
+          <button className="btn btn-success mt-4">{isEditing? "Edit" : "Add"} Workout</button>
+          <button className="btn btn-soft mt-4" type="button" onClick={() => navigate("/workouts")}>Back</button>
       </fieldset>
     </form>
   </div>)

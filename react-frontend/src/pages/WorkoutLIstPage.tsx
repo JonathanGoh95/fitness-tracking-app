@@ -38,7 +38,7 @@ export const WorkoutListPage: FC = () => {
   const closeDeleteModal = () => setDeleteId(null);
 
   const handleEdit = (workoutId:number) => {
-    navigate(`workouts/${workoutId}/edit`)
+    navigate(`${workoutId}/edit`)
   }
 
   const handleDelete = () => {
@@ -53,8 +53,8 @@ export const WorkoutListPage: FC = () => {
   <BannerImage />
   {user ? (
     <div className="max-w-6xl mx-auto p-6">
-    <div className="flex flex-col justify-self-center items-center mb-6 text-3xl italic">
-      <h1>Welcome, {user.username}</h1>
+    <div className="flex flex-col justify-self-center items-center mb-6 text-4xl italic">
+      <h1>{user.username}'s Workouts</h1>
     </div>
     {Array.isArray(data) && data.length !== 0 ? (
     <div className="overflow-x-auto rounded-lg shadow">
@@ -63,7 +63,7 @@ export const WorkoutListPage: FC = () => {
     <thead>
       <tr className="text-center">
         <th>Workout ID</th>
-        <th>Workout Duration (mins)</th>
+        <th>Workout Duration</th>
         <th>Calories Burned</th>
         <th>Workout Date</th>
         <th>Workout Type</th>
@@ -107,15 +107,19 @@ export const WorkoutListPage: FC = () => {
       <button className="btn btn-soft" type="button" onClick={() => navigate("/workouts/new")}>Create New Workout</button>
     </div>
   )}
-  <dialog className="modal" open={deleteId !== null}>
-    <div className="modal-box">
-      <h3 className="font-bold text-lg">Confirm Workout Deletion</h3>
+  <dialog className="modal" open={deleteId !== null} onClick={e => {
+      // Only close if the user clicks the backdrop, not the modal content
+      if (e.target === e.currentTarget) {
+        closeDeleteModal();
+      }}}>
+    <div className="modal-box text-center">
+      <h3 className="font-bold text-xl">Confirm Workout Deletion</h3>
       <p className="py-4">This action cannot be undone. Are you sure you want to continue?</p>
-    </div>
     <form method="dialog" className="modal-action flex justify-center gap-2">
       <button className="btn btn-error" type="button" onClick={handleDelete}>Delete Workout</button>
       <button className="btn btn-neutral" type="button" onClick={closeDeleteModal}>Close</button>
     </form>
+    </div>
   </dialog>
   </div>
   ) : (

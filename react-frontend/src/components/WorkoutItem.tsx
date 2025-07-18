@@ -37,13 +37,14 @@ export const WorkoutItem: FC = () => {
   const closeDeleteModal = () => setDeleteId(null);
   
   const handleEdit = (workoutId:number) => {
-    navigate(`workouts/${workoutId}/edit`)
+    navigate(`${workoutId}/edit`)
   }
 
   const handleDelete = () => {
     if (deleteId !== null) {
       deleteMutation.mutate(deleteId);
       closeDeleteModal();
+      navigate("/workouts")
     }
   }
 
@@ -54,7 +55,7 @@ export const WorkoutItem: FC = () => {
   <div className="hero bg-base-200 w-1/4 rounded-xl mt-6">
     <div className="hero-content text-center">
       <div className="max-w-md">
-        <h1 className="text-5xl font-bold py-4">Workout Details</h1>
+        <h1 className="text-5xl font-bold py-4 italic">Workout Details</h1>
         <div className="flex gap-2 py-4 justify-center"><p className="font-bold text-xl">Workout Type:</p><p className="text-xl">{data?.workout_type}</p></div>
         <div className="flex gap-2 py-4 justify-center"><p className="font-bold text-xl">Category:</p><p className="text-xl">{data?.category}</p></div>
         <div className="flex gap-2 py-4 justify-center"><p className="font-bold text-xl">Duration:</p><p className="text-xl">{data?.duration_mins !== undefined
@@ -84,15 +85,19 @@ export const WorkoutItem: FC = () => {
       </div>
     </div>
   </div>
-    <dialog className="modal" open={deleteId !== null}>
-      <div className="modal-box">
+    <dialog className="modal" open={deleteId !== null} onClick={e => {
+      // Only close if the user clicks the backdrop, not the modal content
+      if (e.target === e.currentTarget) {
+        closeDeleteModal();
+      }}}>
+      <div className="modal-box text-center">
         <h3 className="font-bold text-lg">Confirm Workout Deletion</h3>
         <p className="py-4">This action cannot be undone. Are you sure you want to continue?</p>
+        <form method="dialog" className="modal-action flex justify-center gap-2">
+          <button className="btn btn-error" type="button" onClick={handleDelete}>Delete Workout</button>
+          <button className="btn btn-neutral" type="button" onClick={closeDeleteModal}>Close</button>
+        </form>
       </div>
-      <form method="dialog" className="modal-action flex justify-center gap-2">
-        <button className="btn btn-error" type="button" onClick={handleDelete}>Delete Workout</button>
-        <button className="btn btn-neutral" type="button" onClick={closeDeleteModal}>Close</button>
-      </form>
     </dialog>
   </div>
   ) : (

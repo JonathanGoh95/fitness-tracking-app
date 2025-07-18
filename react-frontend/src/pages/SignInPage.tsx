@@ -45,11 +45,9 @@ export const SignInPage: FC = () => {
 
   // Removes the error message when navigating back to this page
   useEffect(() => {
-  return () => {
-    setError(null);
-  };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+      setError(null);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
   return (
   <>
