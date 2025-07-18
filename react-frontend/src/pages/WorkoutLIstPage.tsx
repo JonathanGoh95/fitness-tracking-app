@@ -5,11 +5,9 @@ import { useNavigate } from "react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteWorkout } from "../services/workoutService";
 import { deleteIdAtom } from "../atoms/deleteIdAtom";
-// import { useState } from "react";
-import type { FC } from "react";
 import { BannerImage } from "../components/BannerImage";
 
-export const WorkoutListPage: FC = () => {
+export const WorkoutListPage = () => {
   const user = useAtomValue(userAtom)
   const navigate = useNavigate()
   const queryClient = useQueryClient();

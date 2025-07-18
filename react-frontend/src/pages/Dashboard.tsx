@@ -1,10 +1,9 @@
-import type { FC } from "react";
 import { useAtomValue } from "jotai";
 import { userAtom } from "../atoms/userAtom";
 import { useNavigate } from "react-router";
 import { BannerImage } from "../components/BannerImage";
 
-export const Dashboard: FC = () => {
+export const Dashboard = () => {
   const user = useAtomValue(userAtom)
   const navigate = useNavigate()
 

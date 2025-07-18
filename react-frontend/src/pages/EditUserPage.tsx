@@ -1,4 +1,4 @@
-import { useEffect, useRef, type FC } from "react";
+import { useEffect, useRef } from "react";
 import { userAtom } from "../atoms/userAtom";
 import { useAtom } from "jotai";
 import { useParams } from "react-router";
@@ -11,7 +11,7 @@ import { formValidityAtom } from "../atoms/formValidityAtom";
 import { updateUser } from "../services/userService";
 import { toast } from "react-toastify";
 
-export const EditUserPage: FC = () => {
+export const EditUserPage = () => {
     const { userId } = useParams();
     const [user, setUser] = useAtom(userAtom)
     const navigate = useNavigate()

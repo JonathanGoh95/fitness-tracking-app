@@ -1,4 +1,3 @@
-import type { FC } from "react";
 import { Link } from "react-router";
 import { useAtom } from "jotai";
 import { userAtom } from "../atoms/userAtom";
@@ -6,7 +5,7 @@ import { RESET } from "jotai/utils";
 import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
 
-export const NavBar: FC = () => {
+export const NavBar = () => {
   const [user, setUser] = useAtom(userAtom)
   const navigate = useNavigate()
 

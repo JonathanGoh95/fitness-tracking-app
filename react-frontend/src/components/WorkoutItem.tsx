@@ -1,13 +1,12 @@
 import { userAtom } from "../atoms/userAtom";
 import { useAtomValue, useAtom } from "jotai";
-import type { FC } from "react";
 import { useNavigate, useParams } from "react-router";
 import { useWorkout } from "../hooks/useWorkout";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteWorkout } from "../services/workoutService";
 import { deleteIdAtom } from "../atoms/deleteIdAtom";
 
-export const WorkoutItem: FC = () => {
+export const WorkoutItem = () => {
   const user = useAtomValue(userAtom);
   const queryClient = useQueryClient();
   const navigate = useNavigate();

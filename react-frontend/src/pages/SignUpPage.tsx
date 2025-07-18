@@ -1,4 +1,4 @@
-import { useEffect, useRef, type FC } from "react";
+import { useEffect, useRef } from "react";
 import { signUp } from '../services/authService';
 import { adminSignUp } from '../services/authService';
 import { useAtom } from 'jotai';
@@ -10,7 +10,7 @@ import { toast } from "react-toastify";
 import { BannerImage } from "../components/BannerImage";
 import { formValidityAtom } from "../atoms/formValidityAtom";
 
-export const SignUpPage: FC = () => {
+export const SignUpPage = () => {
   const navigate = useNavigate()
   const [user,setUser] = useAtom(userAtom);
   const [loading, setLoading] = useAtom(loadingAtom)

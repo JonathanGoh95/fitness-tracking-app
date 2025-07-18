@@ -1,4 +1,4 @@
-import { useEffect, type FC } from "react";
+import { useEffect } from "react";
 import { signIn } from '../services/authService';
 import { useAtom, useSetAtom } from 'jotai';
 import { userAtom } from '../atoms/userAtom';
@@ -8,7 +8,7 @@ import { loadingAtom } from "../atoms/loadingAtom";
 import { toast } from "react-toastify";
 import { BannerImage } from "../components/BannerImage";
 
-export const SignInPage: FC = () => {
+export const SignInPage = () => {
   const navigate = useNavigate()
   const setUser = useSetAtom(userAtom);
   const [loading, setLoading] = useAtom(loadingAtom)

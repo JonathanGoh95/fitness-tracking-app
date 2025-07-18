@@ -4,10 +4,9 @@ import { deleteUser } from "../services/userService";
 import { useAtom, useAtomValue } from "jotai"
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteIdAtom } from "../atoms/deleteIdAtom";
-import type { FC } from "react"
 import { useNavigate } from "react-router-dom";
 
-export const UserListPage: FC = () => {
+export const UserListPage = () => {
     const user = useAtomValue(userAtom)
     const queryClient = useQueryClient();
     const navigate = useNavigate()
