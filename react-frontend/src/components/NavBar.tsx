@@ -18,7 +18,7 @@ export const NavBar = () => {
   }
 
   return (
-  <div className="navbar bg-base-100 shadow-sm flex justify-between bg-black text-white">
+  <div className="navbar shadow-sm flex justify-between bg-black text-white">
       <div className="flex ml-2 text-xl">
         <Link to={'/'}>🏋🏽🔥FitTrack💪🏼🎧</Link>
       </div>
