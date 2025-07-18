@@ -5,13 +5,18 @@ import { useNavigate } from "react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteWorkout } from "../services/workoutService";
 import { deleteIdAtom } from "../atoms/deleteIdAtom";
+import { totalCaloriesAtom } from "../atoms/totalCaloriesAtom";
+import { totalDurationAtom } from "../atoms/totalDurationAtom";
 import { BannerImage } from "../components/BannerImage";
+import { useEffect } from "react";
 
 export const WorkoutListPage = () => {
   const user = useAtomValue(userAtom)
   const navigate = useNavigate()
   const queryClient = useQueryClient();
   const [deleteId, setDeleteId] = useAtom(deleteIdAtom);
+  const [totalCalories, setTotalCalories] = useAtom(totalCaloriesAtom)
+  const [totalDuration, setTotalDuration] = useAtom(totalDurationAtom)
 
   const deleteMutation = useMutation({
     mutationFn: (workoutId: number) => {
@@ -27,6 +32,14 @@ export const WorkoutListPage = () => {
   });
 
   const { isLoading, error, data } = useWorkouts()
+
+  const totalCal = Array.isArray(data)? data.reduce((acc,workout) => acc + (workout.calories_burned || 0), 0) : 0
+  const totalDur = Array.isArray(data)? data.reduce((acc,workout) => acc + (workout.duration_mins || 0), 0) : 0
+
+  useEffect(()=>{
+    setTotalCalories(totalCal)
+    setTotalDuration(totalDur)
+  },[totalCal, totalDur, setTotalCalories, setTotalDuration])
 
   if (isLoading) return <div className="flex justify-center mt-6"><span className="loading loading-spinner loading-xl"></span></div>
 
@@ -45,17 +58,17 @@ export const WorkoutListPage = () => {
       closeDeleteModal();
     }
   }
-
+  
   return (
   <>
   <BannerImage />
   {user ? (
     <div className="max-w-6xl mx-auto p-6">
-    <div className="flex flex-col justify-self-center items-center mb-6 text-4xl italic">
+    <div className="flex flex-col justify-self-center items-center mb-6 text-4xl font-bold italic">
       <h1>{user.username}'s Workouts</h1>
     </div>
     {Array.isArray(data) && data.length !== 0 ? (
-    <div className="overflow-x-auto rounded-lg shadow">
+    <div className="overflow-x-auto">
     <table className="table w-full border border-base-300">
     {/* head */}
     <thead>
@@ -95,7 +108,14 @@ export const WorkoutListPage = () => {
     ))}
     </tbody>
     </table>
-    <div className="flex justify-center mt-4">
+    <div className="flex justify-center gap-6 font-bold py-4 text-xl italic">
+      <p>Total Calories Burned: {totalCalories}</p>
+      <p>Total Workout Duration: {totalDuration >= 60 ? 
+      `${Math.floor(totalDuration / 60)} hr${Math.floor(totalDuration / 60) > 1 ? "s" : ""} ${totalDuration % 60} min${Math.floor(totalDuration % 60) > 1 ? "s" : ""}`
+      : `${totalDuration} mins`}
+      </p>
+    </div>
+    <div className="flex justify-center mt-2">
       <button className="btn btn-soft" type="button" onClick={() => navigate("/workouts/new")}>Create New Workout</button>
     </div>
   </div>) : 

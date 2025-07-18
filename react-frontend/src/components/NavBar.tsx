@@ -28,7 +28,7 @@ export const NavBar = () => {
           <li><Link to='/workouts/new'>Add Workout</Link></li>
           {user && user.user_role === 'admin' && (
             <>
-              <li><p>Welcome, Admin {user.username}</p></li>
+              <li><p className="cursor-default hover:bg-transparent focus:bg-transparent">Welcome, Admin {user.username}</p></li>
               <li><Link to="/sign-up">Add Admin Account</Link></li>
               <li><Link to="/users">View User Accounts</Link></li>
               <li><button onClick={handleLogout}>Logout</button></li>
@@ -36,7 +36,7 @@ export const NavBar = () => {
           )}
           {user && user.user_role === 'user' && (
             <>
-              <li><p>Welcome, {user.username}</p></li>
+              <li><p className="cursor-default hover:bg-transparent focus:bg-transparent">Welcome, {user.username}</p></li>
               <li><Link to={`/users/${user.id}/edit`}>Edit Profile</Link></li>
               <li><button onClick={handleLogout}>Logout</button></li>
             </>
