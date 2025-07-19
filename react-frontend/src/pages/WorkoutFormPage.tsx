@@ -256,7 +256,7 @@ export const WorkoutFormPage: FC<WorkoutFormPageProps> = ({ workoutId }) => {
           </form>
         </div>
       ) : (
-        <div className="mt-6 flex justify-center text-3xl italic">
+        <div className="mt-16 text-center text-3xl italic">
           <h1>Sign Up/Sign In to add/create your workout(s)!</h1>
         </div>
       )}

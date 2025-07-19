@@ -5,6 +5,7 @@ import { useWorkout } from "../hooks/useWorkout";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteWorkout } from "../services/workoutService";
 import { deleteIdAtom } from "../atoms/deleteIdAtom";
+import { BannerImage } from "./BannerImage";
 
 export const WorkoutItem = () => {
   const user = useAtomValue(userAtom);
@@ -35,7 +36,7 @@ export const WorkoutItem = () => {
       </div>
     );
 
-  if (error) return "An error has occurred: " + error.message;
+  if (error) (<h1 className="mt-6 text-center text-3xl italic">An error has occurred: {error.message}</h1>)
 
   const openDeleteModal = (id: number) => setDeleteId(id);
   const closeDeleteModal = () => setDeleteId(null);
@@ -54,6 +55,7 @@ export const WorkoutItem = () => {
 
   return (
     <>
+      <BannerImage />
       {user ? (
         <div className="flex justify-center">
           <div className="hero bg-base-200 mt-6 w-1/4 rounded-xl">
@@ -159,7 +161,9 @@ export const WorkoutItem = () => {
           </dialog>
         </div>
       ) : (
-        <h1>Sign Up/Sign In to view your workouts!</h1>
+        <div className="mt-6 flex justify-center text-3xl italic">
+          <h1>Sign Up/Sign In to view your workouts!</h1>
+        </div>
       )}
     </>
   );

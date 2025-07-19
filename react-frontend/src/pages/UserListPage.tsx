@@ -5,6 +5,7 @@ import { useAtom, useAtomValue } from "jotai";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteIdAtom } from "../atoms/deleteIdAtom";
 import { useNavigate } from "react-router-dom";
+import { BannerImage } from "../components/BannerImage";
 
 export const UserListPage = () => {
   const user = useAtomValue(userAtom);
@@ -34,7 +35,7 @@ export const UserListPage = () => {
       </div>
     );
 
-  if (error) return "An error has occurred: " + error.message;
+  if (error) return (<h1 className="mt-6 text-center text-3xl italic">An error has occurred: {error.message}</h1>)
 
   const openDeleteModal = (id: number) => setDeleteId(id);
   const closeDeleteModal = () => setDeleteId(null);
@@ -52,6 +53,7 @@ export const UserListPage = () => {
 
   return (
     <>
+      <BannerImage />
       {user && user.user_role === "admin" ? (
         <div className="mx-auto max-w-6xl p-6">
           <div className="mb-6 flex flex-col items-center justify-self-center italic">
@@ -148,7 +150,7 @@ export const UserListPage = () => {
           </dialog>
         </div>
       ) : (
-        <h1 className="mt-16 text-center text-2xl">
+        <h1 className="mt-6 text-center text-3xl italic">
           You are not authorised to view the list of users!
         </h1>
       )}
