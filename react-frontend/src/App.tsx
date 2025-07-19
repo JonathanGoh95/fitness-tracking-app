@@ -10,9 +10,24 @@ import { EditWorkoutPage } from "./pages/EditWorkoutPage";
 import { ToastContainer } from "react-toastify";
 import { UserListPage } from "./pages/UserListPage";
 import { EditUserPage } from "./pages/EditUserPage";
+import { useEffect } from "react";
+import { useSetAtom } from "jotai";
+import { useNavigate } from "react-router-dom";
+import { userAtom } from "./atoms/userAtom";
+import { setupAxiosInterceptors } from "./services/axiosSetup";
 import "./App.css";
 
 export const App = () => {
+  const setUser = useSetAtom(userAtom);
+  const navigate = useNavigate();
+  // Informs the user when the token expires and will navigate them to the sign up page for a re-login
+  useEffect(() => {
+    setupAxiosInterceptors(() => {
+      setUser(null);
+      navigate("/sign-in");
+    });
+  }, [setUser, navigate]);
+
   return (
     <>
       <NavBar />

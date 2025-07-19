@@ -9,10 +9,17 @@ from dotenv import load_dotenv
 import os
 load_dotenv()
 from app.db import get_db
+from datetime import datetime, timedelta, timezone
 
 api_blueprint = Blueprint('api', __name__)
 workout_blueprint = Blueprint('workouts', __name__, url_prefix="/workouts")
 user_blueprint = Blueprint('users', __name__, url_prefix="/users")
+
+def create_token(user_info, expires_in_hours=1):
+    payload = user_info.copy()
+    payload['exp'] = datetime.now(timezone.utc) + timedelta(hours=expires_in_hours)
+    payload['iat'] = datetime.now(timezone.utc)
+    return jwt.encode(payload, os.getenv('JWT_SECRET'), algorithm="HS256")
 
 def validate_fields(data, required_fields):
     missing = [field for field in required_fields if field not in data or not data[field]]
@@ -55,7 +62,8 @@ def sign_up():
             "user_weight": float(user[3]),
             "user_role": user[4]
         }
-        token = jwt.encode(user_info, os.getenv('JWT_SECRET'), algorithm="HS256")
+        # token = jwt.encode(user_info, os.getenv('JWT_SECRET'), algorithm="HS256")
+        token = create_token(user_info, expires_in_hours=1)
         # Returns a message with the token
         return jsonify({'message': 'User Created Successfully!', 'token': token}), 201
     except Exception as err:
@@ -138,7 +146,8 @@ def sign_in():
             "user_weight": float(user[4]),
             "user_role": user[5]
         }
-        token = jwt.encode(user_info, os.getenv('JWT_SECRET'), algorithm="HS256")
+        # token = jwt.encode(user_info, os.getenv('JWT_SECRET'), algorithm="HS256")
+        token = create_token(user_info, expires_in_hours=1)
         return jsonify({'message': 'Sign In Successful', 'token': token}), 200
     except Exception as err:
         return jsonify({"error": str(err)}), 500
@@ -401,7 +410,8 @@ def update_user(current_user, userId):
                 "user_weight": float(updated_user[3]),
                 "user_role": updated_user[4]
             }
-            updated_token = jwt.encode(updated_user_info, os.getenv('JWT_SECRET'), algorithm="HS256")
+            # updated_token = jwt.encode(updated_user_info, os.getenv('JWT_SECRET'), algorithm="HS256")
+            updated_token = create_token(updated_user_info, expires_in_hours=1)
             return jsonify({'message': 'User Updated Successfully!', 'token': updated_token}), 200
         elif current_user.get('user_role') == 'admin':
             # Admin editing another user - no token returned

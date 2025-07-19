@@ -52,9 +52,11 @@
 ## References:
 - TanStack Query: https://tanstack.com/query/latest/docs/framework/react/overview
 - Flask: https://flask.palletsprojects.com/en/stable/
-- psycopg (Python): https://www.psycopg.org/psycopg3/docs/index.html
+- psycopg (Python PostgreSQL Adapter): https://www.psycopg.org/psycopg3/docs/index.html
+- pyJWT (JWT Authentication used in Flask): https://pyjwt.readthedocs.io/en/stable/api.html
 - Jotai: https://jotai.org/docs
 - Daisy UI: https://daisyui.com/components/
 - Tailwind CSS: https://tailwindcss.com
 - Axios: https://axios-http.com/docs/intro
+- Axios Interceptors (For Token Expiry in Frontend): https://axios-http.com/docs/interceptors
 - MET Values: https://en.wikipedia.org/wiki/Metabolic_equivalent_of_task
