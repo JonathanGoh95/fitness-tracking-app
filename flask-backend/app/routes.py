@@ -188,6 +188,44 @@ def get_user_workouts(current_user):
     except Exception as err:
         return jsonify({"error": str(err)}), 500
 
+# Fetch User's Workouts as Admin
+@workout_blueprint.route('/user/<int:userId>', methods=['GET'])
+@token_required
+def fetch_user_workouts(current_user, userId):
+    if current_user.get('user_role') != 'admin':
+        return jsonify({"error": "Not authorized"}), 403
+    db = get_db()
+    try:
+        with db.cursor() as cur:
+            cur.execute(
+            """
+            SELECT w.id, w.user_id, w.duration_mins, w.calories_burned, w.workout_date,
+            wt.workout_name AS workout_type, ct.category_name AS category
+            FROM workouts w
+            JOIN workout_types wt ON w.workout_type_id = wt.id
+            JOIN category_types ct ON wt.category_id = ct.id
+            WHERE w.user_id = %s
+            ORDER BY w.workout_date DESC
+            """,
+            (userId,)
+        )
+            workouts = cur.fetchall()
+        workout_data = [
+        {
+            'id': w[0],
+            'user_id': w[1],
+            'duration_mins': w[2],
+            'calories_burned': w[3],
+            'workout_date': w[4].isoformat(),
+            'workout_type': w[5],
+            'category': w[6]
+        }
+        for w in workouts
+    ]
+        return jsonify(workout_data)
+    except Exception as err:
+        return jsonify({"error": str(err)}), 500
+
 # Fetch All Users' Workouts
 @workout_blueprint.route('/all', methods=['GET'])
 @token_required
@@ -295,21 +333,34 @@ def add_workout(current_user):
 # Fetch One Workout
 @workout_blueprint.route('/<int:workoutId>/', methods=['GET'])
 @token_required
-def get_workout(current_user, workoutId):
+def fetch_single_workout(current_user, workoutId):
     db = get_db()
     try:
         with db.cursor() as cur:
-            cur.execute(
-                """
-                SELECT w.id, w.duration_mins, w.calories_burned, w.workout_date,
-                w.workout_type_id, wt.workout_name, wt.category_id, ct.category_name
-                FROM workouts w
-                JOIN workout_types wt ON w.workout_type_id = wt.id
-                JOIN category_types ct ON wt.category_id = ct.id
-                WHERE w.id = %s AND w.user_id = %s
-                """,
-                (workoutId, current_user['id'])
-            )
+            if current_user.get('user_role') == 'admin':
+                cur.execute(
+                    """
+                    SELECT w.id, w.duration_mins, w.calories_burned, w.workout_date,
+                    w.workout_type_id, wt.workout_name, wt.category_id, ct.category_name
+                    FROM workouts w
+                    JOIN workout_types wt ON w.workout_type_id = wt.id
+                    JOIN category_types ct ON wt.category_id = ct.id
+                    WHERE w.id = %s
+                    """,
+                    (workoutId,)
+                )
+            else:
+                cur.execute(
+                    """
+                    SELECT w.id, w.duration_mins, w.calories_burned, w.workout_date,
+                    w.workout_type_id, wt.workout_name, wt.category_id, ct.category_name
+                    FROM workouts w
+                    JOIN workout_types wt ON w.workout_type_id = wt.id
+                    JOIN category_types ct ON wt.category_id = ct.id
+                    WHERE w.id = %s AND w.user_id = %s
+                    """,
+                    (workoutId, current_user['id'])
+                )
             row = cur.fetchone()
             if not row:
                 return jsonify({"error": "Workout not found"}), 404

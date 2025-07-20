@@ -55,12 +55,12 @@ export const UserListPage = () => {
     <>
       <BannerImage />
       {user && user.user_role === "admin" ? (
-        <div className="mx-auto max-w-6xl p-6">
+        <div className="mx-auto max-w-6xl p-2">
           <div className="mb-6 flex flex-col items-center justify-self-center italic">
-            <h1 className="mb-4 text-3xl font-bold">
+            <h1 className="mb-4 text-4xl font-bold">
               Welcome, Admin {user.username}
             </h1>
-            <p className="text-xl text-gray-400">Manage user accounts below:</p>
+            <p className="text-2xl text-gray-400">Manage user accounts below:</p>
           </div>
           {data?.length !== 0 ? (
             <div className="overflow-x-auto">
@@ -85,6 +85,12 @@ export const UserListPage = () => {
                       <td>{u.user_role}</td>
                       <td>
                         <div className="flex justify-center gap-2">
+                          <button
+                            className="btn btn-soft btn-sm"
+                            onClick={() => navigate(`/workouts/user/${u.id}`)}
+                          >
+                            View Workouts
+                          </button>
                           <button
                             className="btn btn-warning btn-sm"
                             onClick={() => handleEdit(u.id)}

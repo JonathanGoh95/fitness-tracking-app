@@ -16,6 +16,7 @@ import { useNavigate } from "react-router-dom";
 import { userAtom } from "./atoms/userAtom";
 import { setupAxiosInterceptors } from "./services/axiosSetup";
 import "./App.css";
+import { UserWorkoutListPage } from "./pages/UserWorkoutListPage";
 
 export const App = () => {
   const setUser = useSetAtom(userAtom);
@@ -36,6 +37,7 @@ export const App = () => {
         <Route path="/sign-up" element={<SignUpPage />} />
         <Route path="/sign-in" element={<SignInPage />} />
         <Route path="/workouts" element={<WorkoutListPage />} />
+        <Route path="/workouts/user/:userId" element={<UserWorkoutListPage />} />
         <Route path="/workouts/:workoutId" element={<WorkoutItem />} />
         <Route path="/workouts/new" element={<WorkoutFormPage />} />
         <Route path="/workouts/:workoutId/edit" element={<EditWorkoutPage />} />

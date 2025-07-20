@@ -8,15 +8,25 @@ import { deleteIdAtom } from "../atoms/deleteIdAtom";
 import { totalCaloriesAtom } from "../atoms/totalCaloriesAtom";
 import { totalDurationAtom } from "../atoms/totalDurationAtom";
 import { BannerImage } from "../components/BannerImage";
-import { useEffect } from "react";
+import { useEffect, type FC } from "react";
+import type { WorkoutListPageProps } from "../types/workoutlistprops";
+import { useWorkoutsByUserId } from "../hooks/useWorkoutsByUserId";
+import { useUsers } from "../hooks/useUsers";
 
-export const WorkoutListPage = () => {
+export const WorkoutListPage: FC<WorkoutListPageProps> = ({ userId }) => {
   const user = useAtomValue(userAtom);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [deleteId, setDeleteId] = useAtom(deleteIdAtom);
   const [totalCalories, setTotalCalories] = useAtom(totalCaloriesAtom);
   const [totalDuration, setTotalDuration] = useAtom(totalDurationAtom);
+  const { data: users } = useUsers(user?.token); // Fetch all users if admin
+
+  // Find the user by userId if admin and userId is present
+  const viewedUser = user?.user_role === "admin" && userId && Array.isArray(users)
+    ? users.find(u => u.id === Number(userId))
+    : user;
+
 
   const deleteMutation = useMutation({
     mutationFn: (workoutId: number) => {
@@ -31,7 +41,11 @@ export const WorkoutListPage = () => {
     },
   });
 
-  const { isLoading, error, data } = useWorkouts();
+  const { isLoading, error, data } = user?.user_role === "admin" && userId
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      ? useWorkoutsByUserId(Number(userId))
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      : useWorkouts();
 
   const totalCal = Array.isArray(data)
     ? data.reduce((acc, workout) => acc + (workout.calories_burned || 0), 0)
@@ -74,7 +88,9 @@ export const WorkoutListPage = () => {
       {user ? (
         <div className="mx-auto max-w-6xl p-6">
           <div className="mb-6 flex flex-col items-center justify-self-center text-4xl font-bold italic">
-            <h1>{user.username}'s Workouts</h1>
+            <h1>{viewedUser?.username
+                ? `${viewedUser.username}'s Workouts`
+                : "Workouts"}</h1>
           </div>
           {Array.isArray(data) && data.length !== 0 ? (
             <div className="overflow-x-auto">
@@ -88,7 +104,7 @@ export const WorkoutListPage = () => {
                     <th>Workout Date</th>
                     <th>Workout Type</th>
                     <th>Workout Category</th>
-                    <th>Actions</th>
+                    {user?.user_role === "admin" && userId ? "" : <th>Actions</th>}
                   </tr>
                 </thead>
                 <tbody>
@@ -107,8 +123,8 @@ export const WorkoutListPage = () => {
                       <td>{new Date(w.workout_date).toLocaleDateString()}</td>
                       <td>{w.workout_type}</td>
                       <td>{w.category}</td>
-                      <td>
-                        <div className="flex gap-4">
+                      {user?.user_role === "admin" && userId ? "" : 
+                      <td><div className="flex gap-4">
                           <button
                             className="btn btn-soft mt-4"
                             onClick={() => navigate(`/workouts/${w.id}`)}
@@ -128,7 +144,7 @@ export const WorkoutListPage = () => {
                             Delete
                           </button>
                         </div>
-                      </td>
+                      </td>}
                     </tr>
                   ))}
                 </tbody>
@@ -143,17 +159,17 @@ export const WorkoutListPage = () => {
                 </p>
               </div>
               <div className="mt-2 flex justify-center gap-4">
-                <button
+                {user?.user_role === "admin" && userId ? "" : <button
                   className="btn btn-soft"
                   type="button"
                   onClick={() => navigate("/workouts/new")}
                 >
                   Create New Workout
-                </button>
+                </button>}
                 <button
                   className="btn btn-soft"
                   type="button"
-                  onClick={() => navigate("/")}
+                  onClick={() => navigate(user?.user_role === "admin" && userId ? "/users" : "/")}
                 >
                   Back
                 </button>
@@ -161,13 +177,13 @@ export const WorkoutListPage = () => {
             </div>
           ) : (
             <div className="my-6 flex flex-col items-center gap-6 justify-self-center text-3xl italic">
-              <p>No Workout Data Found for {user.username}.</p>
+              <p>No Workout Data Found for {viewedUser?.username ? `${viewedUser.username}` : ""}.</p>
               <button
                 className="btn btn-soft"
                 type="button"
-                onClick={() => navigate("/workouts/new")}
+                onClick={() => navigate(user?.user_role === "admin" && userId ? "/users": "/workouts/new")}
               >
-                Create New Workout
+                {user?.user_role === "admin" && userId ? "Back" : "Create New Workout"}
               </button>
             </div>
           )}

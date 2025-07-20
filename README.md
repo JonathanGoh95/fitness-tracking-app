@@ -41,9 +41,9 @@
 - Stay logged in even after closing the browser via atomWithStorage.
 
 ### As an Admin, I want to:
-- View all user accounts and their workout data for easy management
-- Delete erroneous users/workouts for moderation (TBC)
-- Create/Promote user accounts to admin (TBC)
+- View all user accounts and their workout data for easy management.
+- Delete erroneous users/workouts for moderation.
+- Create admin user accounts.
 
 ## Tree Structure of Pages/Components
 

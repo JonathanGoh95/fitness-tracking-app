@@ -1,5 +1,5 @@
 import { WorkoutFormPage } from "./WorkoutFormPage";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 
 export const EditWorkoutPage = () => {
   const { workoutId } = useParams();
