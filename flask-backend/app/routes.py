@@ -152,7 +152,7 @@ def sign_in():
     except Exception as err:
         return jsonify({"error": str(err)}), 500
 
-# Fetch User Workouts
+# Fetch User's Workouts
 @workout_blueprint.route('/', methods=['GET'])
 @token_required
 def get_user_workouts(current_user):
@@ -161,7 +161,7 @@ def get_user_workouts(current_user):
         with db.cursor() as cur:
             cur.execute(
             """
-            SELECT w.id, w.duration_mins, w.calories_burned, w.workout_date,
+            SELECT w.id, w.user_id, w.duration_mins, w.calories_burned, w.workout_date,
             wt.workout_name AS workout_type, ct.category_name AS category
             FROM workouts w
             JOIN workout_types wt ON w.workout_type_id = wt.id
@@ -175,14 +175,51 @@ def get_user_workouts(current_user):
         workout_data = [
         {
             'id': w[0],
-            'duration_mins': w[1],
-            'calories_burned': w[2],
-            'workout_date': w[3].isoformat(),
-            'workout_type': w[4],
-            'category': w[5]
+            'user_id': w[1],
+            'duration_mins': w[2],
+            'calories_burned': w[3],
+            'workout_date': w[4].isoformat(),
+            'workout_type': w[5],
+            'category': w[6]
         }
         for w in workouts
     ]
+        return jsonify(workout_data)
+    except Exception as err:
+        return jsonify({"error": str(err)}), 500
+
+# Fetch All Users' Workouts
+@workout_blueprint.route('/all', methods=['GET'])
+@token_required
+def get_all_workouts(current_user):
+    if current_user.get('user_role') != 'admin':
+        return jsonify({"error": "Not authorized"}), 403
+    db = get_db()
+    try:
+        with db.cursor() as cur:
+            cur.execute(
+                """
+                SELECT w.id, w.duration_mins, w.calories_burned, w.workout_date,
+                w.user_id, wt.workout_name AS workout_type, ct.category_name AS category
+                FROM workouts w
+                JOIN workout_types wt ON w.workout_type_id = wt.id
+                JOIN category_types ct ON wt.category_id = ct.id
+                ORDER BY w.workout_date DESC
+                """
+            )
+            workouts = cur.fetchall()
+        workout_data = [
+            {
+                'id': w[0],
+                'duration_mins': w[1],
+                'calories_burned': w[2],
+                'workout_date': w[3].isoformat(),
+                'user_id': w[4],
+                'workout_type': w[5],
+                'category': w[6]
+            }
+            for w in workouts
+        ]
         return jsonify(workout_data)
     except Exception as err:
         return jsonify({"error": str(err)}), 500

@@ -60,3 +60,4 @@
 - Axios: https://axios-http.com/docs/intro
 - Axios Interceptors (For Token Expiry in Frontend): https://axios-http.com/docs/interceptors
 - MET Values: https://en.wikipedia.org/wiki/Metabolic_equivalent_of_task
+- Recharts (React Component-based Library for displaying User Workout Frequency): https://recharts.org/en-US/api/

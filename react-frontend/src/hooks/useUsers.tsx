@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchUsers } from "../services/userService";
 
 // Fetch all workouts
-export const useUsers = (token: string | undefined) => {
+export const useUsers = (token?: string | undefined) => {
   return useQuery({
     queryKey: ["users", token],
     queryFn: () => {

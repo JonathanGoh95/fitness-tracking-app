@@ -21,6 +21,24 @@ const getWorkouts = async (token: string): Promise<Workout[]> => {
   }
 };
 
+const getAllWorkouts = async (token: string): Promise<Workout[]> => {
+  try {
+    const response = await axios.get(`${BASE_URL}/workouts/all`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    // Axios will throw error if status is not of 2XX, so additional checks are not needed
+    // if (response.statusText !== "OK") {
+    //   throw new Error(`Response status: ${response.status}`);
+    // }
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching workout data: ", error);
+    throw error;
+  }
+};
+
 const addWorkout = async (token: string, data: AddEditWorkout) => {
   try {
     const response = await axios.post(`${BASE_URL}/workouts/new`, data, {
@@ -106,6 +124,7 @@ const deleteWorkout = async (token: string, workoutId: number) => {
 
 export {
   getWorkouts,
+  getAllWorkouts,
   addWorkout,
   fetchOneWorkout,
   updateWorkout,

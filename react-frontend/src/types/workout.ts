@@ -1,5 +1,6 @@
 export interface Workout {
   id: number;
+  user_id?: number;
   workout_type: string;
   duration_mins: number;
   calories_burned: number;
