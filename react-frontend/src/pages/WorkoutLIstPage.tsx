@@ -226,7 +226,7 @@ export const WorkoutListPage: FC<WorkoutListPageProps> = ({ userId }) => {
         </div>
       ) : (
         <div className="mt-6 flex justify-center text-3xl italic">
-          <h1>Sign Up/Sign In to view your workouts!</h1>
+          <h1>Sign Up/Sign In to view your workout(s)!</h1>
         </div>
       )}
     </>
