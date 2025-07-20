@@ -38,7 +38,7 @@
 - Add my workout data with details, such as the workout type, duration, etc.
 - Edit my workout data.
 - Securely logout before ending the session.
-- Stay logged in even after closing the browser via atomWithStorage.
+- Automatically logout after a period of time/inactivity (i.e. 1 hour) using PyJWT's Expiration Functionality
 
 ### As an Admin, I want to:
 - View all user accounts and their workout data for easy management.
@@ -53,7 +53,7 @@
 - TanStack Query: https://tanstack.com/query/latest/docs/framework/react/overview
 - Flask: https://flask.palletsprojects.com/en/stable/
 - psycopg (Python PostgreSQL Adapter): https://www.psycopg.org/psycopg3/docs/index.html
-- pyJWT (JWT Authentication used in Flask): https://pyjwt.readthedocs.io/en/stable/api.html
+- PyJWT (JWT Authentication used in Flask): https://pyjwt.readthedocs.io/en/stable/api.html
 - Jotai: https://jotai.org/docs
 - Daisy UI: https://daisyui.com/components/
 - Tailwind CSS: https://tailwindcss.com

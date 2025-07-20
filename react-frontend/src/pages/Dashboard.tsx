@@ -80,7 +80,7 @@ const CustomTooltip = ({ active, payload }: TooltipContentProps<any,any>) => {
                 <option value="">All Users</option>
                 {users.map(u => (
                   <option key={u.id} value={u.id}>
-                    {u.username}{u.user_role==='admin'? " (Admin)" : "(User)"}
+                    {u.username}{u.user_role==='admin'? " (Admin)" : " (User)"}
                   </option>
                 ))}
               </select>
