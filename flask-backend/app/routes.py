@@ -351,7 +351,8 @@ def fetch_single_workout(current_user, workoutId):
             row = cur.fetchone()
             if not row:
                 return jsonify({"error": "Workout not found"}), 404
-            if row[1] != current_user['id'] and current_user.get('user_role') != 'admin':
+            user_id = row[1]
+            if user_id != current_user['id'] and current_user.get('user_role') != 'admin':
                 return jsonify({"error": "Not authorized"}), 403
             workout = {
                 "id": row[0],
