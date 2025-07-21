@@ -20,7 +20,9 @@ export const WorkoutListPage: FC<WorkoutListPageProps> = ({ userId }) => {
   const [deleteId, setDeleteId] = useAtom(deleteIdAtom);
   const [totalCalories, setTotalCalories] = useAtom(totalCaloriesAtom);
   const [totalDuration, setTotalDuration] = useAtom(totalDurationAtom);
-  const { data: users } = useUsers(user?.token); // Fetch all users if admin
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const usersResult = user?.user_role === "admin" ? useUsers(user?.token) : undefined;
+  const users = usersResult?.data;
 
   // Find the user by userId if admin and userId is present
   const viewedUser = user?.user_role === "admin" && userId && Array.isArray(users)

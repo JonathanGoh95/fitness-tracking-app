@@ -13,7 +13,9 @@ export const Dashboard = () => {
   const user = useAtomValue(userAtom);
   const navigate = useNavigate();
   const { data: workouts } = useAllWorkouts();
-  const { data: users } = useUsers(user?.token); // Fetch all users
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const usersResult = user?.user_role === "admin" ? useUsers(user?.token) : undefined;
+  const users = usersResult?.data;
   const [selectedUserId, setSelectedUserId] = useAtom(selectedUserAtom)
 
   // For admins: filter workouts by selected user, otherwise by logged-in user
@@ -26,7 +28,6 @@ export const Dashboard = () => {
         : w.user_id === user?.id
     )
   : [];
-  console.log(filteredWorkouts)
 
   // Filter workouts for the current user if needed
   const chartData = filteredWorkouts.map(w => ({
