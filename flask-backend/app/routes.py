@@ -342,8 +342,8 @@ def fetch_single_workout(current_user, workoutId):
                 SELECT w.id, w.user_id, w.duration_mins, w.calories_burned, w.workout_date,
                 w.workout_type_id, wt.workout_name, wt.category_id, ct.category_name
                 FROM workouts w
-                JOIN workout_types wt ON w.workout_type_id = wt.id
-                JOIN category_types ct ON wt.category_id = ct.id
+                LEFT JOIN workout_types wt ON w.workout_type_id = wt.id
+                LEFT JOIN category_types ct ON wt.category_id = ct.id
                 WHERE w.id = %s
                 """,
                 (workoutId,)

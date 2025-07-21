@@ -67,7 +67,7 @@ export const SignInPage = () => {
               type="text"
               name="username"
               required
-              className="input mb-1"
+              className="input mb-1 w-full"
               placeholder="Username"
               autoComplete="off"
             />
@@ -77,7 +77,7 @@ export const SignInPage = () => {
               type="password"
               name="password"
               required
-              className="input mb-1"
+              className="input mb-1 w-full"
               placeholder="Password"
               autoComplete="off"
             />
