@@ -22,9 +22,16 @@ def seed():
             
             # Seed Sample Users
             users = [
-                    {"username": "alice", "email": "alice@example.com", "password": "password123", "user_weight": 55.0, "user_role": "user"},
-                    {"username": "bob", "email": "bob@example.com", "password": "securepass", "user_weight": 70.5, "user_role": "admin"},
-                ]
+                {"username": "alice", "email": "alice@example.com", "password": "password123", "user_weight": 55.0, "user_role": "user"},
+                {"username": "bob", "email": "bob@example.com", "password": "securepass", "user_weight": 70.5, "user_role": "user"},
+                {"username": "carol", "email": "carol@example.com", "password": "carolpass", "user_weight": 62.0, "user_role": "user"},
+                {"username": "dave", "email": "dave@example.com", "password": "davepass", "user_weight": 80.0, "user_role": "user"},
+                {"username": "eve", "email": "eve@example.com", "password": "evepass", "user_weight": 58.0, "user_role": "user"},
+                {"username": "John", "email": "adminjohn@adminexample.com", "password": "securepass123", "user_weight": 72.0, "user_role": "admin"},
+                {"username": "Jane", "email": "adminjane@adminexample.com", "password": "securepass456", "user_weight": 48.0, "user_role": "admin"},
+                {"username": "Mike", "email": "adminmike@adminexample.com", "password": "mikeadmin", "user_weight": 85.0, "user_role": "admin"},
+                {"username": "Sara", "email": "adminsara@adminexample.com", "password": "saraadmin", "user_weight": 60.0, "user_role": "admin"},
+            ]
             for user in users:
                 hashed_pw = bcrypt.hashpw(bytes(user["password"], 'utf-8'), bcrypt.gensalt()).decode('utf-8')
                 cur.execute(
@@ -32,20 +39,7 @@ def seed():
                     (user["username"], user["email"], hashed_pw, user["user_weight"], user["user_role"])
                 )
                 user["id"] = cur.fetchone()[0]
-                
-            # Add Admin Users (Comment out other code transactions/queries before proceeding)
-            admins = [
-                    {"username": "John", "email": "adminjohn@adminexample.com", "password": "securepass123", "user_weight": 72.0, "user_role": "admin"},
-                    {"username": "Jane", "email": "adminjane@adminexample.com", "password": "securepass456", "user_weight": 48.0, "user_role": "admin"},
-                ]
-            for admin in admins:
-                hashed_pw = bcrypt.hashpw(bytes(admin["password"], 'utf-8'), bcrypt.gensalt()).decode('utf-8')
-                cur.execute(
-                    "INSERT INTO users (username, email, password_hash, user_weight, user_role) VALUES (%s, %s, %s, %s, %s) RETURNING id",
-                    (admin["username"], admin["email"], hashed_pw, admin["user_weight"], admin["user_role"])
-                )
-                admin["id"] = cur.fetchone()[0]
-                
+
             # Seed Category Types
             categories = ["Cardio", "Strength", "Flexibility", "Balance"]
             category_ids = {}
@@ -84,27 +78,27 @@ def seed():
             
             # Seed Workouts (linked to users and workout_types)
             workouts = [
-                {
-                    "user": "alice",
-                    "workout_type": "Running",
-                    "duration": 30,
-                    "calories": 250,
-                    "date": date(2025, 7, 7)
-                },
-                {
-                    "user": "bob",
-                    "workout_type": "Yoga",
-                    "duration": 45,
-                    "calories": 200,
-                    "date": date(2025, 7, 6)
-                },
-                {
-                    "user": "alice",
-                    "workout_type": "Weight Lifting",
-                    "duration": 60,
-                    "calories": 400,
-                    "date": date(2025, 7, 5)
-                },
+                # Alice
+                {"user": "alice", "workout_type": "Running", "duration": 30, "calories": 250, "date": date(2025, 7, 7)},
+                {"user": "alice", "workout_type": "Yoga", "duration": 60, "calories": 180, "date": date(2025, 7, 8)},
+                {"user": "alice", "workout_type": "Swimming", "duration": 45, "calories": 350, "date": date(2025, 7, 9)},
+                # Bob
+                {"user": "bob", "workout_type": "Yoga", "duration": 45, "calories": 200, "date": date(2025, 7, 6)},
+                {"user": "bob", "workout_type": "Weight Lifting", "duration": 50, "calories": 400, "date": date(2025, 7, 10)},
+                # Carol
+                {"user": "carol", "workout_type": "Cycling", "duration": 40, "calories": 300, "date": date(2025, 7, 7)},
+                {"user": "carol", "workout_type": "Pilates", "duration": 30, "calories": 120, "date": date(2025, 7, 8)},
+                # Dave
+                {"user": "dave", "workout_type": "HIIT", "duration": 25, "calories": 350, "date": date(2025, 7, 9)},
+                {"user": "dave", "workout_type": "Push-Ups", "duration": 20, "calories": 150, "date": date(2025, 7, 10)},
+                # Eve
+                {"user": "eve", "workout_type": "Tai Chi", "duration": 60, "calories": 100, "date": date(2025, 7, 11)},
+                {"user": "eve", "workout_type": "Stretching", "duration": 30, "calories": 50, "date": date(2025, 7, 12)},
+                # Admins
+                {"user": "John", "workout_type": "Rowing Machine", "duration": 35, "calories": 280, "date": date(2025, 7, 13)},
+                {"user": "Jane", "workout_type": "Elliptical Trainer", "duration": 40, "calories": 220, "date": date(2025, 7, 14)},
+                {"user": "Mike", "workout_type": "Stair Climbing", "duration": 30, "calories": 300, "date": date(2025, 7, 15)},
+                {"user": "Sara", "workout_type": "Pilates", "duration": 45, "calories": 160, "date": date(2025, 7, 16)},
             ]
             for workout in workouts:
                 user_id = next(u["id"] for u in users if u["username"] == workout["user"])
