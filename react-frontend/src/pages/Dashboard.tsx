@@ -13,8 +13,7 @@ export const Dashboard = () => {
   const user = useAtomValue(userAtom);
   const navigate = useNavigate();
   const { data: workouts } = useAllWorkouts();
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const usersResult = user?.user_role === "admin" ? useUsers(user?.token) : undefined;
+  const usersResult = useUsers(user?.user_role === "admin" ? user?.token : undefined);
   const users = usersResult?.data;
   const [selectedUserId, setSelectedUserId] = useAtom(selectedUserAtom)
 
