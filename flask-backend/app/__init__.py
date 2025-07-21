@@ -11,7 +11,13 @@ def create_app():
     
     # Configuration
     app.config['DATABASE_URI'] = os.getenv('POSTGRES_URL')
-    CORS(app, origins=["https://fittrack-fitness-app.netlify.app"], supports_credentials=True)
+    CORS(
+    app,
+    origins=["https://fittrack-fitness-app.netlify.app"],
+    supports_credentials=True,
+    allow_headers=["Authorization", "Content-Type"],
+    methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+)
 
     # Import and register blueprints for routes
     from app.routes import api_blueprint   # Import Blueprint from Flask in Routes
