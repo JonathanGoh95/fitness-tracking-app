@@ -58,8 +58,8 @@ const CustomTooltip = ({ active, payload }: TooltipContentProps<any,any>) => {
       <BannerImage />
       {user && (user.user_role === "user" || user.user_role === "admin") ? (
         <div className="flex min-h-[40vh] flex-col items-center gap-4 justify-self-center text-4xl italic">
-          <h1>
-            Welcome Back, {user.user_role === "admin" ? `, Admin` : ""} {user.username}!
+          <h1 className="mt-2 mb-6">
+            Welcome Back, {user.user_role === "admin" ? `Admin` : ""} {user.username}!
           </h1>
           <p>
             {user.user_role === "admin"

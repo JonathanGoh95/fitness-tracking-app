@@ -41,10 +41,6 @@ export const WorkoutItem = () => {
   const openDeleteModal = (id: number) => setDeleteId(id);
   const closeDeleteModal = () => setDeleteId(null);
 
-  const handleEdit = (workoutId: number) => {
-    navigate(`${workoutId}/edit`);
-  };
-
   const handleDelete = () => {
     if (deleteId !== null) {
       deleteMutation.mutate(deleteId);
@@ -94,12 +90,11 @@ export const WorkoutItem = () => {
                       : ""}
                   </p>
                 </div>
-                <div className="flex justify-center gap-4">
+                {data?.user_id === user?.id && (
+                  <div className="flex justify-center gap-4">
                   <button
                     className="btn btn-warning mt-4"
-                    onClick={() =>
-                      data?.id !== undefined && handleEdit(data.id)
-                    }
+                    onClick={() => navigate(`edit`)}
                     disabled={data?.id === undefined}
                   >
                     Edit
@@ -119,7 +114,7 @@ export const WorkoutItem = () => {
                   >
                     Back
                   </button>
-                </div>
+                </div>)}
               </div>
             </div>
           </div>

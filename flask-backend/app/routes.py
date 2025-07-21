@@ -337,42 +337,32 @@ def fetch_single_workout(current_user, workoutId):
     db = get_db()
     try:
         with db.cursor() as cur:
-            if current_user.get('user_role') == 'admin':
-                cur.execute(
-                    """
-                    SELECT w.id, w.duration_mins, w.calories_burned, w.workout_date,
-                    w.workout_type_id, wt.workout_name, wt.category_id, ct.category_name
-                    FROM workouts w
-                    JOIN workout_types wt ON w.workout_type_id = wt.id
-                    JOIN category_types ct ON wt.category_id = ct.id
-                    WHERE w.id = %s
-                    """,
-                    (workoutId,)
-                )
-            else:
-                cur.execute(
-                    """
-                    SELECT w.id, w.duration_mins, w.calories_burned, w.workout_date,
-                    w.workout_type_id, wt.workout_name, wt.category_id, ct.category_name
-                    FROM workouts w
-                    JOIN workout_types wt ON w.workout_type_id = wt.id
-                    JOIN category_types ct ON wt.category_id = ct.id
-                    WHERE w.id = %s AND w.user_id = %s
-                    """,
-                    (workoutId, current_user['id'])
-                )
+            cur.execute(
+                """
+                SELECT w.id, w.user_id, w.duration_mins, w.calories_burned, w.workout_date,
+                w.workout_type_id, wt.workout_name, wt.category_id, ct.category_name
+                FROM workouts w
+                JOIN workout_types wt ON w.workout_type_id = wt.id
+                JOIN category_types ct ON wt.category_id = ct.id
+                WHERE w.id = %s
+                """,
+                (workoutId,)
+            )
             row = cur.fetchone()
             if not row:
                 return jsonify({"error": "Workout not found"}), 404
+            if row[1] != current_user['id'] and current_user.get('user_role') != 'admin':
+                return jsonify({"error": "Not authorized"}), 403
             workout = {
                 "id": row[0],
-                "duration_mins": row[1],
-                "calories_burned": row[2],
-                "workout_date": row[3].isoformat(),
-                "workout_type_id": row[4],
-                "workout_type": row[5],
-                "category_id": row[6],
-                "category": row[7]
+                "user_id": row[1],
+                "duration_mins": row[2],
+                "calories_burned": row[3],
+                "workout_date": row[4].isoformat(),
+                "workout_type_id": row[5],
+                "workout_type": row[6],
+                "category_id": row[7],
+                "category": row[8]
             }
         return jsonify(workout), 200
     except Exception as err:

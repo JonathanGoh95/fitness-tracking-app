@@ -10,6 +10,7 @@ export interface Workout {
 
 export interface FetchWorkout {
   id: number;
+  user_id?: number;
   duration_mins: number;
   calories_burned: number;
   workout_date: Date;
