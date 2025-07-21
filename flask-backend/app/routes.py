@@ -331,7 +331,7 @@ def add_workout(current_user):
         return jsonify({"error": str(err)}), 500
     
 # Fetch One Workout
-@workout_blueprint.route('/<int:workoutId>/', methods=['GET'])
+@workout_blueprint.route('/<int:workoutId>', methods=['GET'])
 @token_required
 def fetch_single_workout(current_user, workoutId):
     db = get_db()
