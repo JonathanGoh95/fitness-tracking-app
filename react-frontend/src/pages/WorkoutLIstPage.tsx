@@ -72,6 +72,10 @@ export const WorkoutListPage: FC<WorkoutListPageProps> = ({ userId }) => {
   const openDeleteModal = (id: number) => setDeleteId(id);
   const closeDeleteModal = () => setDeleteId(null);
 
+  const handleView = (workoutId: number) => {
+    navigate(`${workoutId}`);
+  };
+
   const handleEdit = (workoutId: number) => {
     navigate(`${workoutId}/edit`);
   };
@@ -128,7 +132,7 @@ export const WorkoutListPage: FC<WorkoutListPageProps> = ({ userId }) => {
                       <td><div className="flex gap-4">
                           <button
                             className="btn btn-soft mt-4"
-                            onClick={() => navigate(`/workouts/${w.id}`)}
+                            onClick={() => handleView(w.id)}
                           >
                             View
                           </button>
