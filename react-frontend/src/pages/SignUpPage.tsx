@@ -139,7 +139,7 @@ export const SignUpPage = () => {
                 <input
                   type="text"
                   name="username"
-                  className="input validator mb-1"
+                  className="input validator mb-1 w-full"
                   required
                   placeholder="Username"
                   pattern="[A-Za-z][A-Za-z0-9\-]*"
@@ -158,7 +158,7 @@ export const SignUpPage = () => {
                 <input
                   type="email"
                   name="email"
-                  className="input validator mb-1"
+                  className="input validator mb-1 w-full"
                   required
                   placeholder="Email"
                 />
@@ -173,7 +173,7 @@ export const SignUpPage = () => {
                 <input
                   type="password"
                   name="password"
-                  className="input validator mb-1"
+                  className="input validator mb-1 w-full"
                   required
                   placeholder="Password"
                   title="Must be more than 8 characters"
@@ -191,7 +191,7 @@ export const SignUpPage = () => {
                 <input
                   type="password"
                   name="passwordConfirm"
-                  className="input validator mb-1"
+                  className="input validator mb-1 w-full"
                   required
                   placeholder="Confirm Password"
                   pattern="[A-Za-z0-9]{8,}"
@@ -208,7 +208,7 @@ export const SignUpPage = () => {
                 <input
                   type="number"
                   name="weight"
-                  className="input validator mb-1"
+                  className="input validator mb-1 w-full"
                   step={0.01}
                   min={0.01}
                   required

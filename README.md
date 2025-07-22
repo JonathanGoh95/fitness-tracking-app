@@ -48,18 +48,47 @@
 
 ## Database Models/Schemas
 
+![Models/Schemas](./react-frontend/images/models.jpg)
+
 ## Tree Structure of Pages/Components
+
+![Tree Structure](./react-frontend/images/treestructure.jpg)
 
 ## Project Wireframes
 
 ### Guest
 
+![Dashboard](./react-frontend/images/guest1.jpg)
+
+![View Workouts](./react-frontend/images/guest2.jpg)
+
+![Add Workout](./react-frontend/images/guest3.jpg)
+
+![Sign Up](./react-frontend/images/guest4.jpg)
+
+![Sign In](./react-frontend/images/guest5.jpg)
+
+![MET Values](./react-frontend/images/met.jpg)
 
 ### User
 
+![Dashboard](./react-frontend/images/user1.jpg)
+
+![View Workouts](./react-frontend/images/user2.jpg)
+
+![Add Workout](./react-frontend/images/user3.jpg)
+
+![Edit Workout](./react-frontend/images/user4.jpg)
+
+![Edit Profile](./react-frontend/images/user5.jpg)
 
 ### Admin
 
+![Dashboard](./react-frontend/images/admin1.jpg)
+
+![Add Admin Account](./react-frontend/images/admin2.jpg)
+
+![View User Accounts](./react-frontend/images/admin3.jpg)
 
 ## References:
 - TanStack Query: https://tanstack.com/query/latest/docs/framework/react/overview

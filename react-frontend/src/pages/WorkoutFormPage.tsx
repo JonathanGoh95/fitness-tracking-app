@@ -175,8 +175,7 @@ export const WorkoutFormPage: FC<WorkoutFormPageProps> = ({ workoutId }) => {
                   <option key={cat} value={cat}>
                     {cat}
                   </option>
-                ))}
-              </select>
+                ))}</select>
 
               <label className="mt-2 text-sm/6 font-medium text-white">
                 Workout Type
