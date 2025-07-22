@@ -8,9 +8,11 @@ import type { UpdateUser } from "../types/user";
 import { loadingAtom } from "../atoms/loadingAtom";
 import { errorAtom } from "../atoms/errorAtom";
 import { formValidityAtom } from "../atoms/formValidityAtom";
-import { updateUser } from "../services/userService";
+import { deleteUser, updateUser } from "../services/userService";
 import { toast } from "react-toastify";
 import { BannerImage } from "../components/BannerImage";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { deleteIdAtom } from "../atoms/deleteIdAtom";
 
 export const EditUserPage = () => {
   const { userId } = useParams();
@@ -20,8 +22,26 @@ export const EditUserPage = () => {
   const [errorMsg, setErrorMsg] = useAtom(errorAtom);
   const formRef = useRef<HTMLFormElement>(null);
   const [isFormValid, setIsFormValid] = useAtom(formValidityAtom);
+  const [deleteId, setDeleteId] = useAtom(deleteIdAtom);
+  const queryClient = useQueryClient();
+  
+  const deleteMutation = useMutation({
+    mutationFn: (userId: number) => {
+      if (!user || !user.token || user.user_role !== "admin" && user.id !== userId) {
+        return Promise.reject(new Error("User not authenticated"));
+      }
+      return deleteUser(user.token, userId);
+    },
+    onSuccess: () => {
+      // Refetch users after deletion
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+    },
+  });
 
   const { isLoading, error, data } = useUser(Number(userId));
+
+  const openDeleteModal = (id: number) => setDeleteId(id);
+  const closeDeleteModal = () => setDeleteId(null);
 
   // Removes the error message when navigating back to this page
   useEffect(() => {
@@ -87,6 +107,20 @@ export const EditUserPage = () => {
     }
   };
 
+  const handleDelete = async () => {
+    if (deleteId !== null) {
+      await deleteMutation.mutate(deleteId);
+      toast.success("Account Deleted Successfully! Redirecting to Dashboard...")
+      closeDeleteModal();
+      if (deleteId === user?.id){
+        setUser(null)
+        setTimeout(() => {
+          navigate(`/`);
+        }, 250);
+      }
+    }
+  };
+
   return (
     <>
     <BannerImage/>
@@ -114,7 +148,7 @@ export const EditUserPage = () => {
                 <input
                   type="text"
                   name="username"
-                  className="input validator mb-2"
+                  className="input validator mb-2 w-full"
                   required
                   defaultValue={data?.username}
                   pattern="[A-Za-z][A-Za-z0-9\-]*"
@@ -135,7 +169,7 @@ export const EditUserPage = () => {
                 <input
                   type="email"
                   name="email"
-                  className="input validator mb-2"
+                  className="input validator mb-2 w-full"
                   required
                   defaultValue={data?.email}
                 />
@@ -148,7 +182,7 @@ export const EditUserPage = () => {
                 <input
                   type="number"
                   name="weight"
-                  className="input validator"
+                  className="input validator w-full"
                   step={0.01}
                   min={0.01}
                   required
@@ -166,6 +200,13 @@ export const EditUserPage = () => {
                 </button>
                 <button
                   type="button"
+                  className="btn btn-error mt-4"
+                  onClick={() => openDeleteModal(user.id)}
+                >
+                  Delete Account
+                </button>
+                <button
+                  type="button"
                   className="btn btn-soft mt-4"
                   onClick={() =>
                     navigate(user.user_role === "admin" ? "/users" : "/")
@@ -176,6 +217,38 @@ export const EditUserPage = () => {
               </div>
             </fieldset>
           </form>
+          <dialog className="modal" open={deleteId !== null} onClick={(e) => {
+              // Only close if the user clicks the backdrop, not the modal content
+              if (e.target === e.currentTarget) {
+                closeDeleteModal();
+              }
+            }}>
+            <div className="modal-box">
+              <h3 className="text-lg font-bold">Confirm Account Deletion</h3>
+              <p className="py-4">
+                This action cannot be undone. Are you sure you want to continue?
+              </p>
+              <form
+                method="dialog"
+                className="modal-action mt-4 flex justify-center gap-2"
+              >
+                <button
+                  className="btn btn-error"
+                  type="button"
+                  onClick={handleDelete}
+                >
+                  Delete Account
+                </button>
+                <button
+                  className="btn btn-neutral"
+                  type="button"
+                  onClick={closeDeleteModal}
+                >
+                  Close
+                </button>
+              </form>
+            </div>
+          </dialog>
         </div>
       )}
     </>

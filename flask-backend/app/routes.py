@@ -501,7 +501,7 @@ def update_user(current_user, userId):
 @user_blueprint.route('/<int:userId>', methods=['DELETE'])
 @token_required
 def delete_user(current_user, userId):
-    if current_user.get('user_role') != 'admin':
+    if current_user.get('user_role') != 'admin' and current_user['id'] != userId:
         return jsonify({"error": "Not authorized to delete user accounts"}), 403
     db = get_db()
     try:

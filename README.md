@@ -31,7 +31,7 @@
 
 ### As a Guest:
 - I would have to sign up/in before I can add/edit any workouts.
-- I can view the Metabolic Equivalent of Task (MET) values for reference without signing up/in
+- I can view the Metabolic Equivalent of Task (MET) values for reference
 
 ### As a User, I want to:
 - Securely login before accessing my personal workout data.
@@ -46,9 +46,20 @@
 - Delete erroneous users/workouts for moderation purposes.
 - Create admin user accounts.
 
+## Database Models/Schemas
+
 ## Tree Structure of Pages/Components
 
 ## Project Wireframes
+
+### Guest
+
+
+### User
+
+
+### Admin
+
 
 ## References:
 - TanStack Query: https://tanstack.com/query/latest/docs/framework/react/overview
