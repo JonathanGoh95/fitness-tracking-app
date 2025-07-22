@@ -44,7 +44,7 @@ const CustomTooltip = ({ active, payload }: TooltipContentProps<any,any>) => {
     return (
       <div className="bg-white p-2 rounded shadow text-black text-xl">
         <div><strong>{workout.workout_type}</strong></div>
-        <div>Calories: {workout.calories}</div>
+        <div>Calories: {workout.calories} kcal</div>
         <div>Duration: {workout.duration} mins</div>
         <div>Date: {new Date(workout.date).toLocaleDateString()}</div>
       </div>

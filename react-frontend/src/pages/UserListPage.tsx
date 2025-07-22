@@ -1,14 +1,14 @@
 import { userAtom } from "../atoms/userAtom";
 import { useUsers } from "../hooks/useUsers";
 import { deleteUser } from "../services/userService";
-import { useAtom, useAtomValue } from "jotai";
+import { useAtom } from "jotai";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteIdAtom } from "../atoms/deleteIdAtom";
 import { useNavigate } from "react-router-dom";
 import { BannerImage } from "../components/BannerImage";
 
 export const UserListPage = () => {
-  const user = useAtomValue(userAtom);
+  const [user,setUser] = useAtom(userAtom);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const [deleteId, setDeleteId] = useAtom(deleteIdAtom);
@@ -44,10 +44,18 @@ export const UserListPage = () => {
     navigate(`${userId}/edit`);
   };
 
-  const handleDelete = () => {
+  const handleView = (userId: number) => {
+    navigate(`/workouts/user/${userId}`);
+  };
+
+  const handleDelete = async () => {
     if (deleteId !== null) {
-      deleteMutation.mutate(deleteId);
+      await deleteMutation.mutate(deleteId);
       closeDeleteModal();
+      if (deleteId === user?.id){
+        setUser(null)
+        navigate("/")
+      }
     }
   };
 
@@ -87,7 +95,7 @@ export const UserListPage = () => {
                         <div className="flex justify-center gap-2">
                           <button
                             className="btn btn-soft btn-sm"
-                            onClick={() => navigate(`/workouts/user/${u.id}`)}
+                            onClick={() => handleView(u.id)}
                           >
                             View Workouts
                           </button>
@@ -109,7 +117,7 @@ export const UserListPage = () => {
                   ))}
                 </tbody>
               </table>
-              <div className="mt-2 flex justify-center gap-4">
+              <div className="mt-4 flex justify-center gap-4">
                   <button
                   className="btn btn-soft"
                   type="button"
