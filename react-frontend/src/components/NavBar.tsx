@@ -47,6 +47,9 @@ export const NavBar = () => {
                 <Link to={`/users/${user.id}/edit`}>Edit Profile</Link>
               </li>
               <li>
+                <Link to="/metvalues">View MET Values</Link>
+              </li>
+              <li>
                 <button onClick={handleLogout}>Logout</button>
               </li>
             </>
@@ -62,6 +65,9 @@ export const NavBar = () => {
                 <Link to={`/users/${user.id}/edit`}>Edit Profile</Link>
               </li>
               <li>
+                <Link to="/metvalues">View MET Values</Link>
+              </li>
+              <li>
                 <button onClick={handleLogout}>Logout</button>
               </li>
             </>
@@ -73,6 +79,9 @@ export const NavBar = () => {
               </li>
               <li>
                 <Link to="/sign-in">Sign In</Link>
+              </li>
+              <li>
+                <Link to="/metvalues">View MET Values</Link>
               </li>
             </>
           )}

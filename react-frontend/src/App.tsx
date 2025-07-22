@@ -17,6 +17,7 @@ import { userAtom } from "./atoms/userAtom";
 import { setupAxiosInterceptors } from "./services/axiosSetup";
 import "./App.css";
 import { UserWorkoutListPage } from "./pages/UserWorkoutListPage";
+import { METValuesPage } from "./pages/METValues";
 
 export const App = () => {
   const setUser = useSetAtom(userAtom);
@@ -36,6 +37,7 @@ export const App = () => {
         <Route path="/" element={<Dashboard />} />
         <Route path="/sign-up" element={<SignUpPage />} />
         <Route path="/sign-in" element={<SignInPage />} />
+        <Route path="/metvalues" element={<METValuesPage />} />
         <Route path="/workouts" element={<WorkoutListPage />} />
         <Route path="/workouts/user/:userId" element={<UserWorkoutListPage />} />
         <Route path="/workouts/:workoutId" element={<WorkoutItem />} />

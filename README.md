@@ -31,6 +31,7 @@
 
 ### As a Guest:
 - I would have to sign up/in before I can add/edit any workouts.
+- I can view the Metabolic Equivalent of Task (MET) values for reference without signing up/in
 
 ### As a User, I want to:
 - Securely login before accessing my personal workout data.
@@ -42,7 +43,7 @@
 
 ### As an Admin, I want to:
 - View all user accounts and their workout data for easy management.
-- Delete erroneous users/workouts for moderation.
+- Delete erroneous users/workouts for moderation purposes.
 - Create admin user accounts.
 
 ## Tree Structure of Pages/Components

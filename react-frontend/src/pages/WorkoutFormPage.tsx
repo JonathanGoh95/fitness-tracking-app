@@ -143,7 +143,7 @@ export const WorkoutFormPage: FC<WorkoutFormPageProps> = ({ workoutId }) => {
       </div>
     );
 
-  if (error) return "An error has occurred: " + error.message;
+  if (error) return (<h1 className="mt-6 text-center text-3xl italic">An error has occurred: {error.message}</h1>)
 
   return (
     <>
