@@ -21,7 +21,10 @@ const getWorkouts = async (token: string): Promise<Workout[]> => {
   }
 };
 
-const getUserWorkouts = async (token: string, userId: number): Promise<Workout[]> => {
+const getUserWorkouts = async (
+  token: string,
+  userId: number
+): Promise<Workout[]> => {
   try {
     const response = await axios.get(`${BASE_URL}/workouts/user/${userId}`, {
       headers: {

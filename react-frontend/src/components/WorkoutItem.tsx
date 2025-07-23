@@ -36,7 +36,10 @@ export const WorkoutItem = () => {
       </div>
     );
 
-  if (error) (<h1 className="mt-6 text-center text-3xl italic">An error has occurred: {error.message}</h1>)
+  if (error)
+    <h1 className="mt-6 text-center text-3xl italic">
+      An error has occurred: {error.message}
+    </h1>;
 
   const openDeleteModal = (id: number) => setDeleteId(id);
   const closeDeleteModal = () => setDeleteId(null);
@@ -92,29 +95,30 @@ export const WorkoutItem = () => {
                 </div>
                 {data?.user_id === user?.id && (
                   <div className="flex justify-center gap-4">
-                  <button
-                    className="btn btn-warning mt-4"
-                    onClick={() => navigate(`edit`)}
-                    disabled={data?.id === undefined}
-                  >
-                    Edit
-                  </button>
-                  <button
-                    className="btn btn-error mt-4"
-                    onClick={() =>
-                      data?.id !== undefined && openDeleteModal(data?.id)
-                    }
-                    disabled={data?.id === undefined}
-                  >
-                    Delete
-                  </button>
-                  <button
-                    className="btn btn-soft mt-4"
-                    onClick={() => navigate("/workouts")}
-                  >
-                    Back
-                  </button>
-                </div>)}
+                    <button
+                      className="btn btn-warning mt-4"
+                      onClick={() => navigate(`edit`)}
+                      disabled={data?.id === undefined}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      className="btn btn-error mt-4"
+                      onClick={() =>
+                        data?.id !== undefined && openDeleteModal(data?.id)
+                      }
+                      disabled={data?.id === undefined}
+                    >
+                      Delete
+                    </button>
+                    <button
+                      className="btn btn-soft mt-4"
+                      onClick={() => navigate("/workouts")}
+                    >
+                      Back
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           </div>

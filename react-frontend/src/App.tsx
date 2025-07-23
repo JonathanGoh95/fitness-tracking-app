@@ -39,7 +39,10 @@ export const App = () => {
         <Route path="/sign-in" element={<SignInPage />} />
         <Route path="/metvalues" element={<METValuesPage />} />
         <Route path="/workouts" element={<WorkoutListPage />} />
-        <Route path="/workouts/user/:userId" element={<UserWorkoutListPage />} />
+        <Route
+          path="/workouts/user/:userId"
+          element={<UserWorkoutListPage />}
+        />
         <Route path="/workouts/:workoutId" element={<WorkoutItem />} />
         <Route path="/workouts/new" element={<WorkoutFormPage />} />
         <Route path="/workouts/:workoutId/edit" element={<EditWorkoutPage />} />

@@ -2,8 +2,8 @@ import axios from "axios";
 
 export const setupAxiosInterceptors = (onTokenExpired: () => void) => {
   axios.interceptors.response.use(
-    response => response,
-    error => {
+    (response) => response,
+    (error) => {
       if (
         error.response &&
         error.response.status === 401 &&

@@ -63,7 +63,7 @@ const updateUser = async (
       // User editing own profile - return payload and token
       const payload: User = JSON.parse(atob(token.split(".")[1]));
       return { payload, token };
-    } else{
+    } else {
       // Admin editing another user - return success without token
       return { success: true, message: response.data.message };
     }

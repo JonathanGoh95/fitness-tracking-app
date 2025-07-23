@@ -143,7 +143,12 @@ export const WorkoutFormPage: FC<WorkoutFormPageProps> = ({ workoutId }) => {
       </div>
     );
 
-  if (error) return (<h1 className="mt-6 text-center text-3xl italic">An error has occurred: {error.message}</h1>)
+  if (error)
+    return (
+      <h1 className="mt-6 text-center text-3xl italic">
+        An error has occurred: {error.message}
+      </h1>
+    );
 
   return (
     <>
@@ -175,7 +180,8 @@ export const WorkoutFormPage: FC<WorkoutFormPageProps> = ({ workoutId }) => {
                   <option key={cat} value={cat}>
                     {cat}
                   </option>
-                ))}</select>
+                ))}
+              </select>
 
               <label className="mt-2 text-sm/6 font-medium text-white">
                 Workout Type

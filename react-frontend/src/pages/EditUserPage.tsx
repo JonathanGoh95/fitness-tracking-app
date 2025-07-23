@@ -24,10 +24,14 @@ export const EditUserPage = () => {
   const [isFormValid, setIsFormValid] = useAtom(formValidityAtom);
   const [deleteId, setDeleteId] = useAtom(deleteIdAtom);
   const queryClient = useQueryClient();
-  
+
   const deleteMutation = useMutation({
     mutationFn: (userId: number) => {
-      if (!user || !user.token || user.user_role !== "admin" && user.id !== userId) {
+      if (
+        !user ||
+        !user.token ||
+        (user.user_role !== "admin" && user.id !== userId)
+      ) {
         return Promise.reject(new Error("User not authenticated"));
       }
       return deleteUser(user.token, userId);
@@ -86,13 +90,13 @@ export const EditUserPage = () => {
           setTimeout(() => {
             navigate("/");
           }, 250);
-        } else if (user?.user_role === 'admin'){
+        } else if (user?.user_role === "admin") {
           // Admin editing another user - don't update the user atom state
           toast.success("User Profile Updated! Redirecting to Users...");
           setTimeout(() => {
             navigate("/users");
           }, 250);
-          }
+        }
       }
     } catch (err) {
       setErrorMsg("Server Error: " + err);
@@ -110,10 +114,12 @@ export const EditUserPage = () => {
   const handleDelete = async () => {
     if (deleteId !== null) {
       await deleteMutation.mutate(deleteId);
-      toast.success("Account Deleted Successfully! Redirecting to Dashboard...")
+      toast.success(
+        "Account Deleted Successfully! Redirecting to Dashboard..."
+      );
       closeDeleteModal();
-      if (deleteId === user?.id){
-        setUser(null)
+      if (deleteId === user?.id) {
+        setUser(null);
         setTimeout(() => {
           navigate(`/`);
         }, 250);
@@ -123,7 +129,7 @@ export const EditUserPage = () => {
 
   return (
     <>
-    <BannerImage/>
+      <BannerImage />
       {user?.id !== Number(userId) && user?.user_role !== "admin" && (
         <div className="my-6 flex justify-center text-3xl italic">
           <h1>
@@ -217,12 +223,16 @@ export const EditUserPage = () => {
               </div>
             </fieldset>
           </form>
-          <dialog className="modal" open={deleteId !== null} onClick={(e) => {
+          <dialog
+            className="modal"
+            open={deleteId !== null}
+            onClick={(e) => {
               // Only close if the user clicks the backdrop, not the modal content
               if (e.target === e.currentTarget) {
                 closeDeleteModal();
               }
-            }}>
+            }}
+          >
             <div className="modal-box">
               <h3 className="text-lg font-bold">Confirm Account Deletion</h3>
               <p className="py-4">

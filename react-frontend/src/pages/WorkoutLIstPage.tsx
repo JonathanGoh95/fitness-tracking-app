@@ -20,14 +20,16 @@ export const WorkoutListPage: FC<WorkoutListPageProps> = ({ userId }) => {
   const [deleteId, setDeleteId] = useAtom(deleteIdAtom);
   const [totalCalories, setTotalCalories] = useAtom(totalCaloriesAtom);
   const [totalDuration, setTotalDuration] = useAtom(totalDurationAtom);
-  const usersResult = useUsers(user?.user_role === "admin" ? user?.token : undefined);
+  const usersResult = useUsers(
+    user?.user_role === "admin" ? user?.token : undefined
+  );
   const users = usersResult?.data;
 
   // Find the user by userId if admin and userId is present
-  const viewedUser = user?.user_role === "admin" && userId && Array.isArray(users)
-    ? users.find(u => u.id === Number(userId))
-    : user;
-
+  const viewedUser =
+    user?.user_role === "admin" && userId && Array.isArray(users)
+      ? users.find((u) => u.id === Number(userId))
+      : user;
 
   const deleteMutation = useMutation({
     mutationFn: (workoutId: number) => {
@@ -42,11 +44,12 @@ export const WorkoutListPage: FC<WorkoutListPageProps> = ({ userId }) => {
     },
   });
 
-  const { isLoading, error, data } = user?.user_role === "admin" && userId
-      // eslint-disable-next-line react-hooks/rules-of-hooks
-      ? useWorkoutsByUserId(Number(userId))
-      // eslint-disable-next-line react-hooks/rules-of-hooks
-      : useWorkouts();
+  const { isLoading, error, data } =
+    user?.user_role === "admin" && userId
+      ? // eslint-disable-next-line react-hooks/rules-of-hooks
+        useWorkoutsByUserId(Number(userId))
+      : // eslint-disable-next-line react-hooks/rules-of-hooks
+        useWorkouts();
 
   const totalCal = Array.isArray(data)
     ? data.reduce((acc, workout) => acc + (workout.calories_burned || 0), 0)
@@ -67,7 +70,12 @@ export const WorkoutListPage: FC<WorkoutListPageProps> = ({ userId }) => {
       </div>
     );
 
-  if (error) return (<h1 className="mt-6 text-center text-3xl italic">An error has occurred: {error.message}</h1>)
+  if (error)
+    return (
+      <h1 className="mt-6 text-center text-3xl italic">
+        An error has occurred: {error.message}
+      </h1>
+    );
 
   const openDeleteModal = (id: number) => setDeleteId(id);
   const closeDeleteModal = () => setDeleteId(null);
@@ -93,9 +101,11 @@ export const WorkoutListPage: FC<WorkoutListPageProps> = ({ userId }) => {
       {user ? (
         <div className="mx-auto max-w-6xl p-6">
           <div className="mb-6 flex flex-col items-center justify-self-center text-4xl font-bold italic">
-            <h1>{viewedUser?.username
+            <h1>
+              {viewedUser?.username
                 ? `${viewedUser.username}'s Workouts`
-                : "Workouts"}</h1>
+                : "Workouts"}
+            </h1>
           </div>
           {Array.isArray(data) && data.length !== 0 ? (
             <div className="overflow-x-auto">
@@ -109,7 +119,11 @@ export const WorkoutListPage: FC<WorkoutListPageProps> = ({ userId }) => {
                     <th>Workout Date</th>
                     <th>Workout Type</th>
                     <th>Workout Category</th>
-                    {user?.user_role === "admin" && userId ? "" : <th>Actions</th>}
+                    {user?.user_role === "admin" && userId ? (
+                      ""
+                    ) : (
+                      <th>Actions</th>
+                    )}
                   </tr>
                 </thead>
                 <tbody>
@@ -128,28 +142,32 @@ export const WorkoutListPage: FC<WorkoutListPageProps> = ({ userId }) => {
                       <td>{new Date(w.workout_date).toLocaleDateString()}</td>
                       <td>{w.workout_type}</td>
                       <td>{w.category}</td>
-                      {user?.user_role === "admin" && userId ? "" : 
-                      <td><div className="flex gap-4">
-                          <button
-                            className="btn btn-soft mt-4"
-                            onClick={() => handleView(w.id)}
-                          >
-                            View
-                          </button>
-                          <button
-                            className="btn btn-warning mt-4"
-                            onClick={() => handleEdit(w.id)}
-                          >
-                            Edit
-                          </button>
-                          <button
-                            className="btn btn-error mt-4"
-                            onClick={() => openDeleteModal(w.id)}
-                          >
-                            Delete
-                          </button>
-                        </div>
-                      </td>}
+                      {user?.user_role === "admin" && userId ? (
+                        ""
+                      ) : (
+                        <td>
+                          <div className="flex gap-4">
+                            <button
+                              className="btn btn-soft mt-4"
+                              onClick={() => handleView(w.id)}
+                            >
+                              View
+                            </button>
+                            <button
+                              className="btn btn-warning mt-4"
+                              onClick={() => handleEdit(w.id)}
+                            >
+                              Edit
+                            </button>
+                            <button
+                              className="btn btn-error mt-4"
+                              onClick={() => openDeleteModal(w.id)}
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        </td>
+                      )}
                     </tr>
                   ))}
                 </tbody>
@@ -164,17 +182,25 @@ export const WorkoutListPage: FC<WorkoutListPageProps> = ({ userId }) => {
                 </p>
               </div>
               <div className="mt-2 flex justify-center gap-4">
-                {user?.user_role === "admin" && userId ? "" : <button
-                  className="btn btn-soft"
-                  type="button"
-                  onClick={() => navigate("/workouts/new")}
-                >
-                  Create New Workout
-                </button>}
+                {user?.user_role === "admin" && userId ? (
+                  ""
+                ) : (
+                  <button
+                    className="btn btn-soft"
+                    type="button"
+                    onClick={() => navigate("/workouts/new")}
+                  >
+                    Create New Workout
+                  </button>
+                )}
                 <button
                   className="btn btn-soft"
                   type="button"
-                  onClick={() => navigate(user?.user_role === "admin" && userId ? "/users" : "/")}
+                  onClick={() =>
+                    navigate(
+                      user?.user_role === "admin" && userId ? "/users" : "/"
+                    )
+                  }
                 >
                   Back
                 </button>
@@ -182,13 +208,24 @@ export const WorkoutListPage: FC<WorkoutListPageProps> = ({ userId }) => {
             </div>
           ) : (
             <div className="my-6 flex flex-col items-center gap-6 justify-self-center text-3xl italic">
-              <p>No Workout Data Found for {viewedUser?.username ? `${viewedUser.username}` : ""}.</p>
+              <p>
+                No Workout Data Found for{" "}
+                {viewedUser?.username ? `${viewedUser.username}` : ""}.
+              </p>
               <button
                 className="btn btn-soft"
                 type="button"
-                onClick={() => navigate(user?.user_role === "admin" && userId ? "/users": "/workouts/new")}
+                onClick={() =>
+                  navigate(
+                    user?.user_role === "admin" && userId
+                      ? "/users"
+                      : "/workouts/new"
+                  )
+                }
               >
-                {user?.user_role === "admin" && userId ? "Back" : "Create New Workout"}
+                {user?.user_role === "admin" && userId
+                  ? "Back"
+                  : "Create New Workout"}
               </button>
             </div>
           )}

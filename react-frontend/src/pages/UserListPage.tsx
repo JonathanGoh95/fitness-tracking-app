@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { BannerImage } from "../components/BannerImage";
 
 export const UserListPage = () => {
-  const [user,setUser] = useAtom(userAtom);
+  const [user, setUser] = useAtom(userAtom);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const [deleteId, setDeleteId] = useAtom(deleteIdAtom);
@@ -27,7 +27,7 @@ export const UserListPage = () => {
   });
 
   const { isLoading, error, data } = useUsers(user?.token);
-  console.log(data)
+  console.log(data);
   if (isLoading)
     return (
       <div className="mt-6 flex justify-center">
@@ -35,7 +35,12 @@ export const UserListPage = () => {
       </div>
     );
 
-  if (error) return (<h1 className="mt-6 text-center text-3xl italic">An error has occurred: {error.message}</h1>)
+  if (error)
+    return (
+      <h1 className="mt-6 text-center text-3xl italic">
+        An error has occurred: {error.message}
+      </h1>
+    );
 
   const openDeleteModal = (id: number) => setDeleteId(id);
   const closeDeleteModal = () => setDeleteId(null);
@@ -52,9 +57,9 @@ export const UserListPage = () => {
     if (deleteId !== null) {
       await deleteMutation.mutate(deleteId);
       closeDeleteModal();
-      if (deleteId === user?.id){
-        setUser(null)
-        navigate("/")
+      if (deleteId === user?.id) {
+        setUser(null);
+        navigate("/");
       }
     }
   };
@@ -68,7 +73,9 @@ export const UserListPage = () => {
             <h1 className="mb-4 text-4xl font-bold">
               Welcome, Admin {user.username}
             </h1>
-            <p className="text-2xl text-gray-400">Manage user accounts below:</p>
+            <p className="text-2xl text-gray-400">
+              Manage user accounts below:
+            </p>
           </div>
           {data?.length !== 0 ? (
             <div className="overflow-x-auto">
@@ -85,7 +92,7 @@ export const UserListPage = () => {
                 </thead>
                 <tbody>
                   {data?.map((u) => (
-                    <tr key={u.id} className="text-center hover:bg-base-100">
+                    <tr key={u.id} className="hover:bg-base-100 text-center">
                       <td>{u.id}</td>
                       <td>{u.username}</td>
                       <td>{u.email}</td>
@@ -118,7 +125,7 @@ export const UserListPage = () => {
                 </tbody>
               </table>
               <div className="mt-4 flex justify-center gap-4">
-                  <button
+                <button
                   className="btn btn-soft"
                   type="button"
                   onClick={() => navigate("/")}
@@ -130,12 +137,16 @@ export const UserListPage = () => {
           ) : (
             <h2 className="mt-8 text-center text-xl">No Users Found.</h2>
           )}
-          <dialog className="modal" open={deleteId !== null} onClick={(e) => {
+          <dialog
+            className="modal"
+            open={deleteId !== null}
+            onClick={(e) => {
               // Only close if the user clicks the backdrop, not the modal content
               if (e.target === e.currentTarget) {
                 closeDeleteModal();
               }
-            }}>
+            }}
+          >
             <div className="modal-box">
               <h3 className="text-lg font-bold">Confirm User Deletion</h3>
               <p className="py-4">

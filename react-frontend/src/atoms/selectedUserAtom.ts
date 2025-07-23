@@ -1,2 +1,2 @@
 import { atom } from "jotai";
-export const selectedUserAtom = atom<number|null>(null);
+export const selectedUserAtom = atom<number | null>(null);
